@@ -2,11 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:local="clr-namespace:NetworkService.Converters"
+             xmlns:converters="clr-namespace:NetworkService.Converters"
              Background="#1a1a1a">
 
     <UserControl.Resources>
-        <!-- Stil za sve MDL2 ikonice -->
+        <!-- Style for all MDL2 icons -->
         <Style x:Key="IconText" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
             <Setter Property="FontSize" Value="14"/>
@@ -15,17 +15,15 @@
             <Setter Property="Margin" Value="0,0,8,0"/>
         </Style>
 
-        <!-- Konverter (koristi tvoj postojeći C# konverter) -->
-        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <!-- Converter -->
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
 
-        <!-- Glyph resursi -->
+        <!-- Glyph resources -->
         <sys:String x:Key="Glyph_MapPin">&#xE707;</sys:String>
         <sys:String x:Key="Glyph_Key">&#xE192;</sys:String>
-        <!-- alternativa: &#xE72E; -->
         <sys:String x:Key="Glyph_Tag">&#xE1CB;</sys:String>
         <sys:String x:Key="Glyph_Globe">&#xE774;</sys:String>
-        <sys:String x:Key="Glyph_Server">&#xE15E;</sys:String>
-        <!-- izaberi drugi ako želiš drugačiji izgled -->
+        <sys:String x:Key="Glyph_Server">&#xE969;</sys:String>
         <sys:String x:Key="Glyph_Add">&#xE710;</sys:String>
         <sys:String x:Key="Glyph_Delete">&#xE74D;</sys:String>
         <sys:String x:Key="Glyph_Undo">&#xE7A7;</sys:String>
@@ -35,6 +33,70 @@
         <sys:String x:Key="Glyph_Sort">&#xE8CB;</sys:String>
         <sys:String x:Key="Glyph_Check">&#xE10B;</sys:String>
         <sys:String x:Key="Glyph_Cancel">&#xE10A;</sys:String>
+
+        <!-- Button Style -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0a4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="DarkTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox Style -->
+        <Style x:Key="DarkComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -44,10 +106,9 @@
         </Grid.ColumnDefinitions>
 
         <!-- Add New Entity Form -->
-        <Border Grid.Column="0" Background="#222" Margin="5" Padding="10">
+        <Border Grid.Column="0" Background="#222" Margin="5" Padding="10" CornerRadius="8">
             <StackPanel>
-
-                <!-- Naslov -->
+                <!-- Title -->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_MapPin}" FontSize="16"/>
                     <TextBlock Text="Add New Entity (T6 - Servers)" FontWeight="Bold" Foreground="White"/>
@@ -72,24 +133,27 @@
                         <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Key}" Foreground="#888" FontSize="12"/>
                         <TextBlock Text="ID" Foreground="#888"/>
                     </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewServer.Id}"
-                             Background="#333" Foreground="White" Margin="0,5"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" 
+                             Text="{Binding NewServer.Id}"
+                             Style="{StaticResource DarkTextBox}"/>
 
                     <!-- Name -->
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
                         <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tag}" Foreground="#888" FontSize="12"/>
                         <TextBlock Text="Name" Foreground="#888"/>
                     </StackPanel>
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewServer.Name}"
-                             Background="#333" Foreground="White" Margin="0,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" 
+                             Text="{Binding NewServer.Name}"
+                             Style="{StaticResource DarkTextBox}"/>
 
                     <!-- IP -->
                     <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
                         <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Globe}" Foreground="#888" FontSize="12"/>
                         <TextBlock Text="IP" Foreground="#888"/>
                     </StackPanel>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding NewServer.IPAddress}"
-                             Background="#333" Foreground="White" Margin="0,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" 
+                             Text="{Binding NewServer.IPAddress}"
+                             Style="{StaticResource DarkTextBox}"/>
 
                     <!-- Type -->
                     <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
@@ -99,52 +163,54 @@
                     <ComboBox Grid.Row="3" Grid.Column="1"
                               ItemsSource="{Binding ServerTypes}"
                               SelectedItem="{Binding NewServer.Type}"
-                              Background="#333" Foreground="White" Margin="0,5"/>
+                              Style="{StaticResource DarkComboBox}"/>
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal"
                                 HorizontalAlignment="Right" Margin="0,10">
-                        <Button Width="75" Margin="5,0"
-                                Command="{Binding AddServerCommand}"
-                                Background="#0a4" Foreground="White" Padding="5">
+                        <Button Command="{Binding AddServerCommand}"
+                                Style="{StaticResource ActionButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Add}" FontSize="12"/>
                                 <TextBlock Text="Add"/>
                             </StackPanel>
                         </Button>
 
-                        <Button Width="80" Margin="5,0"
-                                Command="{Binding DeleteServerCommand}"
-                                Background="#a40" Foreground="White" Padding="5">
+                        <Button Command="{Binding DeleteServerCommand}"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Background="#a40">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Delete}" FontSize="12"/>
                                 <TextBlock Text="Delete"/>
                             </StackPanel>
                         </Button>
 
-                        <Button Width="100" Margin="5,0"
-                                Command="{Binding UndoCommand}"
-                                Background="#444" Foreground="White" Padding="5">
+                        <Button Command="{Binding UndoCommand}"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Background="#444">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Undo}" FontSize="12"/>
-                                <TextBlock Text="Undo (Ctrl+Z)"/>
+                                <TextBlock Text="Undo"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
 
                     <!-- Validation -->
-                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Warning}" Foreground="Red" FontSize="12"
-                                   Visibility="{Binding ValidationMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
-                        <TextBlock Text="{Binding ValidationMessage}" Foreground="Red"
-                                   FontSize="11" Margin="0,5"/>
+                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" 
+                                Orientation="Horizontal"
+                                Visibility="{Binding ValidationMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                        <TextBlock Style="{StaticResource IconText}" 
+                                   Text="{StaticResource Glyph_Warning}" 
+                                   Foreground="Red" FontSize="12"/>
+                        <TextBlock Text="{Binding ValidationMessage}" 
+                                   Foreground="Red" FontSize="11" Margin="0,5"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
         </Border>
 
         <!-- Search and Filtering -->
-        <Border Grid.Column="1" Background="#222" Margin="5">
+        <Border Grid.Column="1" Background="#222" Margin="5" CornerRadius="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -152,7 +218,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Filter Section -->
-                <Border Background="#1a1a1a" Padding="10">
+                <Border Background="#1a1a1a" Padding="10" CornerRadius="8,8,0,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Filter}" FontSize="14"/>
@@ -172,9 +238,11 @@
                                 <TextBlock Text="Entity Type" Foreground="#888" VerticalAlignment="Center"/>
                             </StackPanel>
 
-                            <ComboBox Grid.Column="1" ItemsSource="{Binding FilterTypes}"
+                            <ComboBox Grid.Column="1" 
+                                      ItemsSource="{Binding FilterTypes}"
                                       SelectedItem="{Binding SelectedFilterType}"
-                                      Background="#333" Foreground="White" Margin="0,0,10,0"/>
+                                      Style="{StaticResource DarkComboBox}"
+                                      Margin="0,0,10,0"/>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,10,0">
                                 <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Sort}" Foreground="#888" FontSize="12" VerticalAlignment="Center"/>
@@ -187,18 +255,22 @@
                                 <RadioButton Content="=" IsChecked="{Binding IsEqualTo}" Foreground="White" Margin="5,0"/>
 
                                 <TextBlock Text="ID value" Foreground="#888" VerticalAlignment="Center" Margin="10,0,5,0"/>
-                                <TextBox Text="{Binding FilterIdValue}" Width="60" Background="#333" Foreground="White"/>
+                                <TextBox Text="{Binding FilterIdValue}" Width="60" Style="{StaticResource DarkTextBox}" Margin="0"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
                 </Border>
 
                 <!-- Data Grid -->
-                <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredServers}"
+                <DataGrid Grid.Row="1" 
+                          ItemsSource="{Binding FilteredServers}"
                           SelectedItem="{Binding SelectedServer}"
-                          AutoGenerateColumns="False" Background="#1a1a1a"
-                          Foreground="White" GridLinesVisibility="Horizontal"
-                          CanUserAddRows="False" Margin="10">
+                          AutoGenerateColumns="False" 
+                          Background="#1a1a1a"
+                          Foreground="White" 
+                          GridLinesVisibility="Horizontal"
+                          CanUserAddRows="False" 
+                          Margin="10">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#333"/>
@@ -228,26 +300,26 @@
                         <DataGridTextColumn Header="Type" Binding="{Binding Type.Name}" Width="100"/>
                         <DataGridTextColumn Header="Last Measurement (%)" Binding="{Binding MeasurementDisplay}" Width="150"/>
 
-                        <!-- Status sa MDL2 -->
+                        <!-- Status with MDL2 -->
                         <DataGridTemplateColumn Header="Status" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <!-- IKONICA: koristimo BasedOn da izbegnemo duplo postavljanje Style -->
-                                        <TextBlock FontSize="12" Margin="0,0,5,0">
+                                        <!-- Icon -->
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,5,0">
                                             <TextBlock.Style>
-                                                <Style TargetType="TextBlock" BasedOn="{StaticResource IconText}">
+                                                <Style TargetType="TextBlock">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Status}" Value="online">
-                                                            <Setter Property="Text" Value="{StaticResource Glyph_Check}"/>
+                                                            <Setter Property="Text" Value="&#xE10B;"/>
                                                             <Setter Property="Foreground" Value="#0f0"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="warning">
-                                                            <Setter Property="Text" Value="{StaticResource Glyph_Warning}"/>
+                                                            <Setter Property="Text" Value="&#xE7BA;"/>
                                                             <Setter Property="Foreground" Value="#fa0"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="offline">
-                                                            <Setter Property="Text" Value="{StaticResource Glyph_Cancel}"/>
+                                                            <Setter Property="Text" Value="&#xE10A;"/>
                                                             <Setter Property="Foreground" Value="#f00"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -255,7 +327,7 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <!-- TEKST STATUSA -->
+                                        <!-- Status Text -->
                                         <TextBlock Text="{Binding Status}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -283,7 +355,7 @@
                 <!-- Footer count -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left"
                             VerticalAlignment="Bottom" Margin="15,5">
-                    <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Server}" Foreground="#888" FontSize="12"/>
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE969;" Foreground="#888" FontSize="12"/>
                     <TextBlock Text="Network Entities (" Foreground="#888" FontSize="11"/>
                     <TextBlock Text="{Binding FilteredServers.Count}" Foreground="#888" FontSize="11"/>
                     <TextBlock Text=" items)" Foreground="#888" FontSize="11"/>

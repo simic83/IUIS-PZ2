@@ -72,6 +72,8 @@ namespace NetworkService.ViewModel
         public ICommand NavigateHistoryUpCommand { get; set; }
         public ICommand NavigateHistoryDownCommand { get; set; }
         public ICommand UndoCommand { get; set; }
+        public ICommand NextTabCommand { get; set; }
+        public ICommand FocusTerminalCommand { get; set; }
 
         public MainWindowViewModel()
         {
@@ -133,6 +135,8 @@ namespace NetworkService.ViewModel
             NavigateHistoryUpCommand = new MyICommand(NavigateHistoryUp);
             NavigateHistoryDownCommand = new MyICommand(NavigateHistoryDown);
             UndoCommand = new MyICommand(ExecuteUndo, () => undoStack.Count > 0);
+            NextTabCommand = new MyICommand(NextTab);
+            FocusTerminalCommand = new MyICommand(FocusTerminal);
         }
 
         private void InitializeViewModels()
@@ -149,6 +153,36 @@ namespace NetworkService.ViewModel
             CurrentViewModel = viewModel;
             string viewName = viewModel.GetType().Name.Replace("ViewModel", "");
             AddTerminalOutput($"Switched to {viewName} view");
+        }
+
+        private void NextTab()
+        {
+            // Cycle through the available views
+            if (CurrentViewModel == entitiesViewModel)
+            {
+                SwitchView(displayViewModel);
+            }
+            else if (CurrentViewModel == displayViewModel)
+            {
+                SwitchView(graphViewModel);
+            }
+            else if (CurrentViewModel == graphViewModel)
+            {
+                SwitchView(entitiesViewModel);
+            }
+        }
+
+        private void FocusTerminal()
+        {
+            // This will need to be implemented based on how you want to focus the terminal
+            // You might need to use a messenger pattern or event to communicate with the view
+            // For now, just log that the command was triggered
+            AddTerminalOutput("Terminal focused");
+
+            // If you need to actually focus a TextBox in the view, you would typically:
+            // 1. Use a behavior or attached property
+            // 2. Use a messenger/event aggregator pattern
+            // 3. Or handle this in the code-behind of your MainWindow
         }
 
         private void ExecuteTerminal()
