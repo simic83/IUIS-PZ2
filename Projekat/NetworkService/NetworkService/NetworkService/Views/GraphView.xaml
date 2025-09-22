@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="NetworkService.Views.GraphView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#1a1a1a">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#222" Padding="10" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Measurement Graph (G2 - Bar Chart)" 
+                          FontWeight="Bold" Foreground="White" 
+                          VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                <TextBlock Grid.Column="1" Text="Select Entity:" Foreground="#888" 
+                          VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Servers}" 
+                         SelectedItem="{Binding SelectedServer}"
+                         DisplayMemberPath="Name" Width="200" HorizontalAlignment="Left"
+                         Background="#333" Foreground="White" Margin="0,0,10,0"/>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <TextBlock Text="Current: " Foreground="#888"/>
+                    <TextBlock Text="{Binding SelectedServer.MeasurementDisplay}" 
+                              Foreground="White" FontWeight="Bold"/>
+                    <TextBlock Text="  Status: " Foreground="#888" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding SelectedServer.Status}" Foreground="White"/>
+                    <TextBlock Text="  Type: " Foreground="#888" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding SelectedServer.Type.Name}" Foreground="White"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Graph Area -->
+        <Border Grid.Row="1" Background="#222" Margin="5" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Bar Chart Canvas -->
+                <Canvas x:Name="GraphCanvas" Grid.Row="0" Background="#1a1a1a" 
+                       Margin="50,20,20,40" ClipToBounds="True">
+                    <!-- Y-Axis -->
+                    <Line X1="0" Y1="0" X2="0" Y2="{Binding ActualHeight, ElementName=GraphCanvas}" 
+                         Stroke="#666" StrokeThickness="2"/>
+
+                    <!-- X-Axis -->
+                    <Line X1="0" Y1="{Binding ActualHeight, ElementName=GraphCanvas}" 
+                         X2="{Binding ActualWidth, ElementName=GraphCanvas}" 
+                         Y2="{Binding ActualHeight, ElementName=GraphCanvas}" 
+                         Stroke="#666" StrokeThickness="2"/>
+
+                    <!-- Y-Axis Labels -->
+                    <TextBlock Text="100" Canvas.Left="-30" Canvas.Top="0" Foreground="#888" FontSize="10"/>
+                    <TextBlock Text="75" Canvas.Left="-25" Canvas.Top="50" Foreground="#888" FontSize="10"/>
+                    <TextBlock Text="50" Canvas.Left="-25" Canvas.Top="100" Foreground="#888" FontSize="10"/>
+                    <TextBlock Text="25" Canvas.Left="-25" Canvas.Top="150" Foreground="#888" FontSize="10"/>
+                    <TextBlock Text="0" Canvas.Left="-20" Canvas.Top="200" Foreground="#888" FontSize="10"/>
+
+                    <!-- Valid Range Indicator -->
+                    <Rectangle Canvas.Left="0" Canvas.Top="50" 
+                              Width="{Binding ActualWidth, ElementName=GraphCanvas}"
+                              Height="50" Fill="#0f4" Opacity="0.1"/>
+
+                    <TextBlock Text="Valid Range: 45-75%" Canvas.Left="10" Canvas.Top="10" 
+                              Foreground="#0f4" FontSize="10"/>
+
+                    <!-- Bars will be drawn programmatically -->
+                    <ItemsControl ItemsSource="{Binding MeasurementBars}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="60" Height="{Binding Height}" 
+                                         Fill="{Binding Color}" 
+                                         Canvas.Left="{Binding X}" 
+                                         Canvas.Bottom="0">
+                                    <Rectangle.ToolTip>
+                                        <ToolTip>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Value, StringFormat='Value: {0}%'}"/>
+                                                <TextBlock Text="{Binding Time, StringFormat='Time: {0:HH:mm:ss}'}"/>
+                                            </StackPanel>
+                                        </ToolTip>
+                                    </Rectangle.ToolTip>
+                                </Rectangle>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Canvas>
+
+                <!-- Legend -->
+                <Border Grid.Row="1" Background="#1a1a1a" Padding="10" Margin="50,0,20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="20" Height="10" Fill="#0f0" Margin="0,0,5,0"/>
+                        <TextBlock Text="Valid (45-75%)" Foreground="#888" Margin="0,0,20,0"/>
+                        <Rectangle Width="20" Height="10" Fill="#f00" Margin="0,0,5,0"/>
+                        <TextBlock Text="Out of Range" Foreground="#888" Margin="0,0,20,0"/>
+                        <TextBlock Text="Chart Type: G2 (Bar Chart)" Foreground="#666" 
+                                  HorizontalAlignment="Right" Margin="20,0,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,207 @@
+﻿<UserControl x:Class="NetworkService.Views.DisplayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#1a1a1a">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Entity Tree -->
+        <Border Grid.Column="0" Background="#222" Margin="5" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Entity Tree" FontWeight="Bold" 
+                          Foreground="White" Margin="0,0,0,10"/>
+
+                <TreeView Grid.Row="1" ItemsSource="{Binding GroupedServers}" 
+                         Background="#1a1a1a" Foreground="White"
+                         AllowDrop="True">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Servers}">
+                            <TextBlock>
+                                <Run Text="{Binding TypeName}"/>
+                                <Run Text=" ("/>
+                                <Run Text="{Binding Servers.Count}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#333" CornerRadius="3" Margin="2" 
+                                           Padding="5" MouseMove="Border_MouseMove"
+                                           MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Id}" Margin="0,0,5,0"/>
+                                            <TextBlock Text=" ("/>
+                                            <TextBlock Text="{Binding MeasurementDisplay}"/>
+                                            <TextBlock Text=")"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+
+                <Button Grid.Row="2" Content="Auto Arrange" Margin="0,10,0,0"
+                       Command="{Binding AutoArrangeCommand}"
+                       Background="#0a4" Foreground="White" Padding="10,5"/>
+            </Grid>
+        </Border>
+
+        <!-- Network Display Grid -->
+        <Border Grid.Column="1" Background="#222" Margin="5" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Network Display Grid (12+ slots)" 
+                          FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+
+                <UniformGrid Grid.Row="1" Rows="3" Columns="4" Margin="5">
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="0">
+                        <Grid>
+                            <TextBlock Text="Slot 1" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot0"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="1">
+                        <Grid>
+                            <TextBlock Text="Slot 2" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot1"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="2">
+                        <Grid>
+                            <TextBlock Text="Slot 3" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot2"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="3">
+                        <Grid>
+                            <TextBlock Text="Slot 4" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot3"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Repeat for slots 5-12 -->
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="4">
+                        <Grid>
+                            <TextBlock Text="Slot 5" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot4"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="5">
+                        <Grid>
+                            <TextBlock Text="Slot 6" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot5"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="6">
+                        <Grid>
+                            <TextBlock Text="Slot 7" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot6"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="7">
+                        <Grid>
+                            <TextBlock Text="Slot 8" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot7"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="8">
+                        <Grid>
+                            <TextBlock Text="Slot 9" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot8"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="9">
+                        <Grid>
+                            <TextBlock Text="Slot 10" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot9"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="10">
+                        <Grid>
+                            <TextBlock Text="Slot 11" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot10"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
+                           AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
+                           Background="#1a1a1a" Tag="11">
+                        <Grid>
+                            <TextBlock Text="Slot 12" Foreground="#555" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                            <ContentPresenter x:Name="slot11"/>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
