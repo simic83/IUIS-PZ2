@@ -7,6 +7,7 @@ using System.Windows.Input;
 using NetworkService.Common;
 using NetworkService.Model;
 using NetworkService.ViewModel.Commands;
+using System.Collections.Generic;
 
 namespace NetworkService.ViewModel
 {
@@ -63,6 +64,7 @@ namespace NetworkService.ViewModel
             set
             {
                 SetProperty(ref filterIdValue, value);
+                // Always apply filter when value changes
                 ApplyFilter();
             }
         }
@@ -72,8 +74,23 @@ namespace NetworkService.ViewModel
             get { return isLessThan; }
             set
             {
-                SetProperty(ref isLessThan, value);
-                if (value) ApplyFilter();
+                // Allow deselection - if clicking already selected, deselect it
+                if (value && isLessThan)
+                {
+                    SetProperty(ref isLessThan, false);
+                    SetProperty(ref isGreaterThan, false);
+                    SetProperty(ref isEqualTo, false);
+                }
+                else
+                {
+                    SetProperty(ref isLessThan, value);
+                    if (value)
+                    {
+                        SetProperty(ref isGreaterThan, false);
+                        SetProperty(ref isEqualTo, false);
+                    }
+                }
+                ApplyFilter();
             }
         }
 
@@ -82,8 +99,23 @@ namespace NetworkService.ViewModel
             get { return isGreaterThan; }
             set
             {
-                SetProperty(ref isGreaterThan, value);
-                if (value) ApplyFilter();
+                // Allow deselection - if clicking already selected, deselect it
+                if (value && isGreaterThan)
+                {
+                    SetProperty(ref isLessThan, false);
+                    SetProperty(ref isGreaterThan, false);
+                    SetProperty(ref isEqualTo, false);
+                }
+                else
+                {
+                    SetProperty(ref isGreaterThan, value);
+                    if (value)
+                    {
+                        SetProperty(ref isLessThan, false);
+                        SetProperty(ref isEqualTo, false);
+                    }
+                }
+                ApplyFilter();
             }
         }
 
@@ -92,8 +124,23 @@ namespace NetworkService.ViewModel
             get { return isEqualTo; }
             set
             {
-                SetProperty(ref isEqualTo, value);
-                if (value) ApplyFilter();
+                // Allow deselection - if clicking already selected, deselect it
+                if (value && isEqualTo)
+                {
+                    SetProperty(ref isLessThan, false);
+                    SetProperty(ref isGreaterThan, false);
+                    SetProperty(ref isEqualTo, false);
+                }
+                else
+                {
+                    SetProperty(ref isEqualTo, value);
+                    if (value)
+                    {
+                        SetProperty(ref isLessThan, false);
+                        SetProperty(ref isGreaterThan, false);
+                    }
+                }
+                ApplyFilter();
             }
         }
 
@@ -105,6 +152,7 @@ namespace NetworkService.ViewModel
 
         public ICommand AddServerCommand { get; set; }
         public ICommand DeleteServerCommand { get; set; }
+        public ICommand DeleteSelectedCommand { get; set; }
         public ICommand UndoCommand { get; set; }
 
         public EntitiesViewModel(MainWindowViewModel mainViewModel)
@@ -133,6 +181,7 @@ namespace NetworkService.ViewModel
         {
             AddServerCommand = new MyICommand(AddServer);
             DeleteServerCommand = new MyICommand(DeleteServer, CanDeleteServer);
+            DeleteSelectedCommand = new MyICommand(DeleteSelectedServers, CanDeleteSelectedServers);
             UndoCommand = mainViewModel.UndoCommand;
         }
 
@@ -150,7 +199,8 @@ namespace NetworkService.ViewModel
             bool typeMatch = selectedFilterType == "All" || server.Type.Name == selectedFilterType;
             bool idMatch = true;
 
-            if (filterIdValue > 0)
+            // Only apply ID filter if a radio button is selected AND there's a value
+            if (filterIdValue > 0 && (isLessThan || isGreaterThan || isEqualTo))
             {
                 if (isLessThan) idMatch = server.Id < filterIdValue;
                 else if (isGreaterThan) idMatch = server.Id > filterIdValue;
@@ -187,7 +237,7 @@ namespace NetworkService.ViewModel
             mainViewModel.AddServer(server);
 
             // Create undo action
-            var undoAction = new MyICommand(() => mainViewModel.RemoveServer(server));
+            var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
             mainViewModel.AddUndoAction(undoAction);
 
             // Clear form
@@ -211,6 +261,36 @@ namespace NetworkService.ViewModel
         private bool CanDeleteServer()
         {
             return SelectedServer != null;
+        }
+
+        // New method to delete all selected servers
+        private void DeleteSelectedServers()
+        {
+            var selectedServers = mainViewModel.Servers.Where(s => s.IsSelected).ToList();
+
+            if (selectedServers.Count == 0)
+                return;
+
+            // Remove all selected servers
+            foreach (var server in selectedServers)
+            {
+                mainViewModel.RemoveServer(server);
+            }
+
+            // Create a single undo action that restores all deleted servers
+            var undoAction = new MyICommand(() =>
+            {
+                foreach (var server in selectedServers)
+                {
+                    mainViewModel.AddServer(server);
+                }
+            });
+            mainViewModel.AddUndoAction(undoAction);
+        }
+
+        private bool CanDeleteSelectedServers()
+        {
+            return mainViewModel.Servers.Any(s => s.IsSelected);
         }
 
         protected override void ValidateSelf()

@@ -60,14 +60,46 @@
                             <Setter Property="Foreground" Value="White"/>
                         </Style>
                     </TreeView.Resources>
+
+                    <!-- Ikonice za Web/Database/File -->
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Servers}">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                <!-- Ikonica -->
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                                           Margin="0,0,6,0"
+                                           VerticalAlignment="Center"
+                                           Foreground="White">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="&#xE7C3;"/>
+                                            <!-- default: file -->
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TypeName}" Value="Web">
+                                                    <Setter Property="Text" Value="&#xE774;"/>
+                                                    <!-- globus -->
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TypeName}" Value="Database">
+                                                    <Setter Property="Text" Value="&#xE7F8;"/>
+                                                    <!-- baza -->
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TypeName}" Value="File">
+                                                    <Setter Property="Text" Value="&#xE7C3;"/>
+                                                    <!-- fajl -->
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <!-- Naslov grupe i broj -->
                                 <TextBlock Text="{Binding TypeName}" Foreground="White"/>
                                 <TextBlock Text=" (" Foreground="White"/>
                                 <TextBlock Text="{Binding Servers.Count}" Foreground="White"/>
                                 <TextBlock Text=")" Foreground="White"/>
                             </StackPanel>
+
+                            <!-- Deca (serveri) -->
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate>
                                     <Border Background="#333" CornerRadius="3" Margin="2"
@@ -117,7 +149,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Network Display Grid (12 slots - Drag and Drop enabled)" FontWeight="Bold" Foreground="White" Margin="10"/>
+                <TextBlock Grid.Row="0" Text="Network Display Grid (12 slots - Drag and Drop enabled)"
+                           FontWeight="Bold" Foreground="White" Margin="10"/>
 
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding DisplaySlots}" Margin="10">
                     <ItemsControl.ItemsPanel>
