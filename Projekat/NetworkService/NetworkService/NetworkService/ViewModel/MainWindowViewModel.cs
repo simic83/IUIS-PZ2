@@ -31,6 +31,8 @@ namespace NetworkService.ViewModel
         private Thread listeningThread;
         private bool isListening;
 
+        private readonly string measurementLogPath = "measurements.txt";
+
         public ObservableCollection<Server> Servers
         {
             get { return servers; }
@@ -406,6 +408,7 @@ namespace NetworkService.ViewModel
                             App.Current.Dispatcher.Invoke(() => {
                                 AddServer(server);
                                 AddTerminalOutput($"New server registered: {server.Name} with initial value {value:F0}%");
+                                AppendMeasurementLog(server);
                             });
                         }
                         else
@@ -414,6 +417,7 @@ namespace NetworkService.ViewModel
                             App.Current.Dispatcher.Invoke(() => {
                                 server.LastMeasurement = value;
                                 server.LastUpdate = DateTime.Now;
+                                AppendMeasurementLog(server);
                             });
                         }
 
@@ -456,6 +460,30 @@ namespace NetworkService.ViewModel
                     return "File";
                 default:
                     return "Web"; // Default to Web
+            }
+        }
+
+        private void AppendMeasurementLog(Server s)
+        {
+            try
+            {
+                const string header = "Timestamp, ID, Name, Type, IP, Address, Load(%), Status";
+                if (!File.Exists(measurementLogPath))
+                {
+                    File.AppendAllText(measurementLogPath, header + Environment.NewLine);
+                }
+
+                string ts = DateTime.Now.ToString("HH:mm:ss"); // format kao u mini terminalu
+                string name = string.IsNullOrWhiteSpace(s.Name) ? $"Server {s.Id:000}" : s.Name;
+
+                string line =
+                    $"[{ts}] {s.Id:000}, {name}, {s.Type?.Name}, {s.IPAddress}, {s.IPAddress}, {s.LastMeasurement:F0}%, {s.Status}{Environment.NewLine}";
+
+                File.AppendAllText(measurementLogPath, line);
+            }
+            catch
+            {
+                // ne blokirati UI zbog I/O problema
             }
         }
 
