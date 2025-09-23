@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
@@ -11,11 +11,11 @@
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\entitiesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\entitiesview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\displayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\displayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\displayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
@@ -157,7 +157,7 @@
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\EntitiesViewModel.cs",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\EntitiesViewModel.cs",
               "RelativeToolTip": "NetworkService\\ViewModel\\EntitiesViewModel.cs",
-              "ViewState": "AgIAACQBAAAAAAAAAAAUwD8BAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABwBAAAAAAAAAAAkwD8BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-23T09:19:53.307Z",
               "EditorCaption": ""
@@ -361,8 +361,7 @@
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\DisplayView.xaml",
               "RelativeToolTip": "NetworkService\\Views\\DisplayView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T10:30:40.326Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-22T10:30:40.326Z"
             }
           ]
         }

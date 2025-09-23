@@ -191,7 +191,8 @@
                                               IsHitTestVisible="False"/>
                             <Popup x:Name="Popup" Placement="Bottom" 
                                    IsOpen="{TemplateBinding IsDropDownOpen}" 
-                                   AllowsTransparency="True">
+                                   AllowsTransparency="True"
+                                   MinWidth="{Binding ActualWidth, ElementName=ToggleButton}">
                                 <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                     <Border Background="#333" BorderBrush="#555" BorderThickness="1">
                                         <ScrollViewer>
@@ -395,7 +396,6 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Title -->
@@ -404,175 +404,85 @@
                             <TextBlock Text="Search and Filtering" FontWeight="Bold" Foreground="White" FontSize="16"/>
                         </StackPanel>
 
-                        <!-- Filter Controls in Two Separate Sections -->
+                        <!-- Filter Controls: Combined in a single block -->
                         <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- LEFT SECTION: Type Filter -->
-                            <Border Grid.Column="0" Background="#2a2a2a" BorderBrush="#444" BorderThickness="1" 
+                            <Border Background="#2a2a2a" BorderBrush="#444" BorderThickness="1"
                                     CornerRadius="5" Padding="15">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                                <StackPanel>
 
-                                    <!-- Type Filter Title -->
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tags}" 
-                                                   Foreground="#0a9" FontSize="14"/>
-                                        <TextBlock Text="Filter by Type" Foreground="#0a9" FontWeight="Bold" 
-                                                   VerticalAlignment="Center" FontSize="14"/>
+                                    <!-- TYPE (prvo) -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <TextBlock Style="{StaticResource IconText}" 
+               Text="{StaticResource Glyph_Server}" 
+               Foreground="#0a9" FontSize="14"/>
+                                        <TextBlock Text="Filter by Type" Foreground="#0a9" 
+               FontWeight="Bold" VerticalAlignment="Center" FontSize="14"/>
                                     </StackPanel>
 
-                                    <!-- Type Dropdown -->
-                                    <ComboBox Grid.Row="1" 
-                                              ItemsSource="{Binding FilterTypes}"
+                                    <ComboBox ItemsSource="{Binding FilterTypes}"
                                               SelectedItem="{Binding SelectedFilterType}"
                                               Style="{StaticResource DarkComboBox}"
-                                              VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
+                                              VerticalAlignment="Center" />
 
-                            <!-- Separator (empty column) -->
-                            <Grid Grid.Column="1"/>
+                                    <!-- razmak -->
+                                    <Border Height="12" Background="Transparent"/>
 
-                            <!-- RIGHT SECTION: ID Filter -->
-                            <Border Grid.Column="2" Background="#2a2a2a" BorderBrush="#444" BorderThickness="1" 
-                                    CornerRadius="5" Padding="15">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- ID Filter Title -->
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Sort}" 
-                                                   Foreground="#f90" FontSize="14"/>
-                                        <TextBlock Text="Filter by ID" Foreground="#f90" FontWeight="Bold" 
-                                                   VerticalAlignment="Center" FontSize="14"/>
+                                    <!-- ID (ispod) -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <TextBlock Style="{StaticResource IconText}" 
+               Text="{StaticResource Glyph_Key}" 
+               Foreground="#f90" FontSize="14"/>
+                                        <TextBlock Text="Filter by ID" Foreground="#f90" 
+               FontWeight="Bold" VerticalAlignment="Center" FontSize="14"/>
                                     </StackPanel>
 
-                                    <!-- Comparison Options -->
-                                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
-                                        <TextBlock Text="Condition:" Foreground="#888" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="13"/>
-                                        <RadioButton Content="Less than" IsChecked="{Binding IsLessThan}" 
-                                                     GroupName="IdFilter"
-                                                     Style="{StaticResource DarkRadioButton}" FontSize="13" Margin="0,0,10,0"/>
-                                        <RadioButton Content="Greater than" IsChecked="{Binding IsGreaterThan}" 
-                                                     GroupName="IdFilter"
-                                                     Style="{StaticResource DarkRadioButton}" FontSize="13" Margin="0,0,10,0"/>
-                                        <RadioButton Content="Equal to" IsChecked="{Binding IsEqualTo}" 
-                                                     GroupName="IdFilter"
-                                                     Style="{StaticResource DarkRadioButton}" FontSize="13"/>
-                                    </StackPanel>
-
-                                    <!-- Value Input -->
-                                    <Grid Grid.Row="2">
+                                    <!-- Jedan red: vrednost + 3 radio dugmeta -->
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Column="0" Text="ID Value:" Foreground="#888" 
-                                                   VerticalAlignment="Center" Margin="0,0,10,0" FontSize="13"/>
-                                        <TextBox Grid.Column="1" Text="{Binding FilterIdValue, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Style="{StaticResource DarkTextBox}" 
-                                                 VerticalAlignment="Center" Margin="0"/>
+                                        <!-- ID vrednost -->
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding FilterIdValue, UpdateSourceTrigger=PropertyChanged}"
+                                                 Style="{StaticResource DarkTextBox}"
+                                                 Margin="0"
+                                                 VerticalAlignment="Center" />
 
-                                        <!-- Clear button hint -->
-                                        <TextBlock Grid.Column="2" Text="(Click selected option to clear)" 
-                                                   Foreground="#666" FontSize="11" 
-                                                   VerticalAlignment="Center" Margin="10,0,0,0"
-                                                   FontStyle="Italic"/>
+                                        <!-- < -->
+                                        <RadioButton Grid.Column="1"
+                                                     GroupName="IdFilter"
+                                                     IsChecked="{Binding IsLessThan}"
+                                                     Style="{StaticResource DarkRadioButton}"
+                                                     Margin="8,0,0,0">
+                                            <TextBlock Text="&lt;" FontSize="14"/>
+                                        </RadioButton>
+
+                                        <!-- > -->
+                                        <RadioButton Grid.Column="2"
+                                                     GroupName="IdFilter"
+                                                     IsChecked="{Binding IsGreaterThan}"
+                                                     Style="{StaticResource DarkRadioButton}"
+                                                     Margin="4,0,0,0">
+                                            <TextBlock Text="&gt;" FontSize="14"/>
+                                        </RadioButton>
+
+                                        <!-- = -->
+                                        <RadioButton Grid.Column="3"
+                                                     GroupName="IdFilter"
+                                                     IsChecked="{Binding IsEqualTo}"
+                                                     Style="{StaticResource DarkRadioButton}"
+                                                     Margin="4,0,0,0">
+                                            <TextBlock Text="=" FontSize="14"/>
+                                        </RadioButton>
                                     </Grid>
-                                </Grid>
+
+                                </StackPanel>
                             </Border>
                         </Grid>
-
-                        <!-- Optional: Active Filters Display -->
-                        <Border Grid.Row="2" Background="#1a1a1a" Margin="0,15,0,0" Padding="10" 
-                                CornerRadius="3" BorderBrush="#333" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Active Filters: " Foreground="#666" FontSize="12"/>
-                                <TextBlock Foreground="#0a9" FontSize="12" Margin="5,0">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value=""/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedFilterType}" Value="Web">
-                                                    <Setter Property="Text" Value="Type: Web"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedFilterType}" Value="Database">
-                                                    <Setter Property="Text" Value="Type: Database"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedFilterType}" Value="File">
-                                                    <Setter Property="Text" Value="Type: File"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-
-                                <!-- ID Filter status -->
-                                <TextBlock Foreground="#f90" FontSize="12" Margin="10,0">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value=""/>
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding IsLessThan}" Value="True"/>
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text" Value="ID %lt; "/>
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </MultiDataTrigger>
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding IsGreaterThan}" Value="True"/>
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text" Value="ID > "/>
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </MultiDataTrigger>
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding IsEqualTo}" Value="True"/>
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text" Value="ID = "/>
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </MultiDataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                                <TextBlock Text="{Binding FilterIdValue}" Foreground="#f90" FontSize="12">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsLessThan}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsGreaterThan}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsEqualTo}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </StackPanel>
-                        </Border>
                     </Grid>
                 </Border>
 
@@ -684,7 +594,6 @@
                 <!-- Footer count -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left"
                     Margin="20,4,20,12">
-                    <TextBlock Style="{StaticResource IconText}" Text="&#xE969;" Foreground="#888" FontSize="13"/>
                     <TextBlock Text="Network Entities (" Foreground="#888" FontSize="12"/>
                     <TextBlock Text="{Binding FilteredServers.Count}" Foreground="#888" FontSize="12"/>
                     <TextBlock Text=" items)" Foreground="#888" FontSize="12"/>
