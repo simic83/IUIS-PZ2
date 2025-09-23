@@ -3,17 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\slavi\\AppData\\Local\\Temp\\.vsdbgsrc\\1afc73f2d9c879658d6cca69a32be5198a3ce72bdc37694ad52c6c8fcbc90be0\\FrameworkTemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\graphview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\graphview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -22,20 +11,56 @@
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\displayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\slavi\\AppData\\Local\\Temp\\.vsdbgsrc\\1afc73f2d9c879658d6cca69a32be5198a3ce72bdc37694ad52c6c8fcbc90be0\\FrameworkTemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\converters\\graphconverters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\converters\\graphconverters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\displayview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\displayview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\converters\\stringtovisibilityconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\converters\\stringtovisibilityconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\viewmodel\\graphviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\graphviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\viewmodel\\displayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\displayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{134D87AD-F428-469F-A98E-5F007EDD241B}|..\\..\\MeteringSimulator\\MeteringSimulator\\MeteringSimulator.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\meteringsimulator\\meteringsimulator\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{134D87AD-F428-469F-A98E-5F007EDD241B}|..\\..\\MeteringSimulator\\MeteringSimulator\\MeteringSimulator.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\meteringsimulator\\meteringsimulator\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{134D87AD-F428-469F-A98E-5F007EDD241B}|..\\..\\MeteringSimulator\\MeteringSimulator\\MeteringSimulator.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\meteringsimulator\\meteringsimulator\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\obj\\Debug\\Views\\MainWindow.g.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -49,7 +74,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -57,20 +82,111 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
+              "Title": "GraphConverters.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Converters\\GraphConverters.cs",
+              "RelativeDocumentMoniker": "NetworkService\\Converters\\GraphConverters.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Converters\\GraphConverters.cs",
+              "RelativeToolTip": "NetworkService\\Converters\\GraphConverters.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAIwCwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T19:33:20.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DisplayView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\DisplayView.xaml.cs",
+              "RelativeDocumentMoniker": "NetworkService\\Views\\DisplayView.xaml.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\DisplayView.xaml.cs",
+              "RelativeToolTip": "NetworkService\\Views\\DisplayView.xaml.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAIwFcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T19:22:08.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "GraphViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\GraphViewModel.cs",
+              "RelativeDocumentMoniker": "NetworkService\\ViewModel\\GraphViewModel.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\GraphViewModel.cs",
+              "RelativeToolTip": "NetworkService\\ViewModel\\GraphViewModel.cs",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAIwLkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T19:19:52.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DisplayViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\DisplayViewModel.cs",
+              "RelativeDocumentMoniker": "NetworkService\\ViewModel\\DisplayViewModel.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\DisplayViewModel.cs",
+              "RelativeToolTip": "NetworkService\\ViewModel\\DisplayViewModel.cs",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAIwKIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T19:19:32.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\App.config",
+              "RelativeDocumentMoniker": "..\\..\\MeteringSimulator\\MeteringSimulator\\App.config",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\App.config",
+              "RelativeToolTip": "..\\..\\MeteringSimulator\\MeteringSimulator\\App.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-09-22T14:28:54.452Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\App.xaml.cs",
+              "RelativeDocumentMoniker": "..\\..\\MeteringSimulator\\MeteringSimulator\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\App.xaml.cs",
+              "RelativeToolTip": "..\\..\\MeteringSimulator\\MeteringSimulator\\App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T14:28:42.321Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "..\\..\\MeteringSimulator\\MeteringSimulator\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\MeteringSimulator\\MeteringSimulator\\MainWindow.xaml.cs",
+              "RelativeToolTip": "..\\..\\MeteringSimulator\\MeteringSimulator\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAJwAAAAAAAAAAAAgwLIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-22T14:28:40.533Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "MainWindowViewModel.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\MainWindowViewModel.cs",
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\MainWindowViewModel.cs",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\MainWindowViewModel.cs",
               "RelativeToolTip": "NetworkService\\ViewModel\\MainWindowViewModel.cs",
-              "ViewState": "AgIAAH8AAAAAAAAAAAAIwLkAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAMMBAAAAAAAAAAAIwNsBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-22T12:27:52.093Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "FrameworkTemplate.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\AppData\\Local\\Temp\\.vsdbgsrc\\1afc73f2d9c879658d6cca69a32be5198a3ce72bdc37694ad52c6c8fcbc90be0\\FrameworkTemplate.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\1afc73f2d9c879658d6cca69a32be5198a3ce72bdc37694ad52c6c8fcbc90be0\\FrameworkTemplate.cs",
@@ -83,29 +199,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "GraphView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\GraphView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\GraphView.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\GraphView.xaml",
               "RelativeToolTip": "NetworkService\\Views\\GraphView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T12:14:04.373Z"
+              "WhenOpened": "2025-09-22T12:14:04.373Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "App.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\App.xaml",
               "RelativeDocumentMoniker": "NetworkService\\App.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\App.xaml",
               "RelativeToolTip": "NetworkService\\App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T12:11:12.184Z"
+              "WhenOpened": "2025-09-22T12:11:12.184Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "StringToVisibilityConverter.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Converters\\StringToVisibilityConverter.cs",
               "RelativeDocumentMoniker": "NetworkService\\Converters\\StringToVisibilityConverter.cs",
@@ -113,11 +231,12 @@
               "RelativeToolTip": "NetworkService\\Converters\\StringToVisibilityConverter.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAIwBgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-22T12:10:53.289Z"
+              "WhenOpened": "2025-09-22T12:10:53.289Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 14,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\MainWindow.xaml",
               "RelativeDocumentMoniker": "NetworkService\\MainWindow.xaml",
@@ -128,7 +247,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "NetworkService\\MainWindow.xaml.cs",
@@ -140,7 +259,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 16,
               "Title": "MainWindow.g.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\obj\\Debug\\Views\\MainWindow.g.cs",
               "RelativeDocumentMoniker": "NetworkService\\obj\\Debug\\Views\\MainWindow.g.cs",
@@ -152,25 +271,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "EntitiesView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\EntitiesView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\EntitiesView.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\EntitiesView.xaml",
               "RelativeToolTip": "NetworkService\\Views\\EntitiesView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T10:30:43.375Z"
+              "WhenOpened": "2025-09-22T10:30:43.375Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "DisplayView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\DisplayView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\DisplayView.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\DisplayView.xaml",
               "RelativeToolTip": "NetworkService\\Views\\DisplayView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T10:30:40.326Z"
+              "WhenOpened": "2025-09-22T10:30:40.326Z",
+              "EditorCaption": ""
             }
           ]
         }

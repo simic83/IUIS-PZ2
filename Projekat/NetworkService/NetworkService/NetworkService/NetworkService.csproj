@@ -61,6 +61,7 @@
     <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\ValidationBase.cs" />
     <Compile Include="Common\ValidationErrors.cs" />
+    <Compile Include="Converters\GraphConverters.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Model\MeasurementData.cs" />
     <Compile Include="Model\Server.cs" />

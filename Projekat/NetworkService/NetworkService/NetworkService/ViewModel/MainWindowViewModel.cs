@@ -27,6 +27,8 @@ namespace NetworkService.ViewModel
         private DisplayViewModel displayViewModel;
         private GraphViewModel graphViewModel;
         private string statusMessage;
+        private Thread listeningThread;
+        private bool isListening;
 
         public ObservableCollection<Server> Servers
         {
@@ -94,36 +96,8 @@ namespace NetworkService.ViewModel
             CommandHistory = new ObservableCollection<string>();
             undoStack = new Stack<ICommand>();
 
-            // Add initial servers
-            AddServer(new Server
-            {
-                Id = 1,
-                Name = "Web Server 1",
-                IPAddress = "192.168.1.10",
-                Type = new ServerType("Web", "/Resources/Images/web_server.png"),
-                LastMeasurement = 67,
-                LastUpdate = DateTime.Now
-            });
-
-            AddServer(new Server
-            {
-                Id = 2,
-                Name = "Database Primary",
-                IPAddress = "192.168.1.20",
-                Type = new ServerType("Database", "/Resources/Images/database_server.png"),
-                LastMeasurement = 23,
-                LastUpdate = DateTime.Now
-            });
-
-            AddServer(new Server
-            {
-                Id = 3,
-                Name = "File Server",
-                IPAddress = "192.168.1.30",
-                Type = new ServerType("File", "/Resources/Images/file_server.png"),
-                LastMeasurement = 89,
-                LastUpdate = DateTime.Now
-            });
+            // Don't add initial mock servers - wait for MeteringStation data
+            // The application should start with empty server list
         }
 
         private void InitializeCommands()
@@ -157,7 +131,6 @@ namespace NetworkService.ViewModel
 
         private void NextTab()
         {
-            // Cycle through the available views
             if (CurrentViewModel == entitiesViewModel)
             {
                 SwitchView(displayViewModel);
@@ -174,15 +147,7 @@ namespace NetworkService.ViewModel
 
         private void FocusTerminal()
         {
-            // This will need to be implemented based on how you want to focus the terminal
-            // You might need to use a messenger pattern or event to communicate with the view
-            // For now, just log that the command was triggered
             AddTerminalOutput("Terminal focused");
-
-            // If you need to actually focus a TextBox in the view, you would typically:
-            // 1. Use a behavior or attached property
-            // 2. Use a messenger/event aggregator pattern
-            // 3. Or handle this in the code-behind of your MainWindow
         }
 
         private void ExecuteTerminal()
@@ -235,9 +200,15 @@ namespace NetworkService.ViewModel
 
         private void ListServers()
         {
+            if (Servers.Count == 0)
+            {
+                AddTerminalOutput("No servers registered. Waiting for MeteringStation data...");
+                return;
+            }
+
             foreach (var server in Servers)
             {
-                AddTerminalOutput($"{server.Id}: {server.Name} ({server.IPAddress}) - {server.Status}");
+                AddTerminalOutput($"{server.Id:000}: {server.Name} ({server.IPAddress}) - {server.Status}");
             }
         }
 
@@ -343,44 +314,64 @@ namespace NetworkService.ViewModel
 
         private void CreateListener()
         {
+            isListening = true;
             var tcp = new TcpListener(IPAddress.Any, 25675);
             tcp.Start();
 
-            var listeningThread = new Thread(() =>
+            listeningThread = new Thread(() =>
             {
-                while (true)
+                while (isListening)
                 {
-                    var tcpClient = tcp.AcceptTcpClient();
-                    ThreadPool.QueueUserWorkItem(param =>
+                    try
                     {
-                        NetworkStream stream = tcpClient.GetStream();
-                        byte[] bytes = new byte[1024];
-                        int i = stream.Read(bytes, 0, bytes.Length);
-                        string incoming = Encoding.ASCII.GetString(bytes, 0, i);
-
-                        if (incoming.Equals("Need object count"))
+                        var tcpClient = tcp.AcceptTcpClient();
+                        ThreadPool.QueueUserWorkItem(param =>
                         {
-                            byte[] data = Encoding.ASCII.GetBytes(Servers.Count.ToString());
-                            stream.Write(data, 0, data.Length);
-                        }
-                        else
-                        {
-                            ProcessMeasurement(incoming);
-                        }
+                            try
+                            {
+                                NetworkStream stream = tcpClient.GetStream();
+                                byte[] bytes = new byte[1024];
+                                int i = stream.Read(bytes, 0, bytes.Length);
+                                string incoming = Encoding.ASCII.GetString(bytes, 0, i);
 
-                        stream.Close();
-                        tcpClient.Close();
-                    }, null);
+                                if (incoming.Equals("Need object count"))
+                                {
+                                    byte[] data = Encoding.ASCII.GetBytes(Servers.Count.ToString());
+                                    stream.Write(data, 0, data.Length);
+                                }
+                                else
+                                {
+                                    ProcessMeasurement(incoming);
+                                }
+
+                                stream.Close();
+                                tcpClient.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                LogToFile($"Error processing client: {ex.Message}");
+                            }
+                        }, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (isListening)
+                        {
+                            LogToFile($"Listener error: {ex.Message}");
+                        }
+                    }
                 }
             });
 
             listeningThread.IsBackground = true;
             listeningThread.Start();
+
+            AddTerminalOutput("TCP Listener started on port 25675");
         }
 
         private void ProcessMeasurement(string data)
         {
-            // Format: "Entitet_ID:Value"
+            // Format: "Entitet_X:Value" where X is 0-based index
             string[] parts = data.Split(':');
             if (parts.Length == 2)
             {
@@ -388,24 +379,80 @@ namespace NetworkService.ViewModel
                 if (double.TryParse(parts[1], out double value))
                 {
                     string[] entityParts = entityPart.Split('_');
-                    if (entityParts.Length == 2 && int.TryParse(entityParts[1], out int id))
+                    if (entityParts.Length == 2 && int.TryParse(entityParts[1], out int index))
                     {
-                        var server = Servers.FirstOrDefault(s => s.Id == id + 1); // Adjust for 0-based index
-                        if (server != null)
+                        // MeteringStation sends 0-based index
+                        // We need to create or update servers based on this index
+                        int serverId = index + 1; // Convert to 1-based ID
+
+                        var server = Servers.FirstOrDefault(s => s.Id == serverId);
+                        if (server == null)
                         {
-                            server.LastMeasurement = value;
-                            server.LastUpdate = DateTime.Now;
-
-                            LogToFile($"Measurement received - Server: {server.Name}, Value: {value}%, Time: {DateTime.Now}");
-
-                            // Update graph data
-                            if (CurrentViewModel is GraphViewModel graph)
+                            // Create new server if it doesn't exist
+                            string serverType = DetermineServerType(serverId);
+                            server = new Server
                             {
-                                graph.AddMeasurement(server.Id, value);
-                            }
+                                Id = serverId,
+                                Name = $"Server {serverId:000}",
+                                IPAddress = $"192.168.1.{10 + serverId}",
+                                Type = new ServerType(serverType, $"/Resources/Images/{serverType.ToLower()}_server.png"),
+                                LastMeasurement = value,
+                                LastUpdate = DateTime.Now
+                            };
+
+                            App.Current.Dispatcher.Invoke(() => {
+                                AddServer(server);
+                                AddTerminalOutput($"New server registered: {server.Name} with initial value {value:F0}%");
+                            });
+                        }
+                        else
+                        {
+                            // Update existing server
+                            App.Current.Dispatcher.Invoke(() => {
+                                server.LastMeasurement = value;
+                                server.LastUpdate = DateTime.Now;
+                            });
+                        }
+
+                        LogToFile($"Measurement received - Server: {serverId}, Value: {value:F0}%, Time: {DateTime.Now}");
+
+                        // Update graph data if needed
+                        if (graphViewModel != null)
+                        {
+                            App.Current.Dispatcher.Invoke(() => {
+                                graphViewModel.AddMeasurement(serverId, value);
+                            });
                         }
                     }
                 }
+            }
+        }
+
+        private string DetermineServerType(int serverId)
+        {
+            // Assign server types based on ID patterns for T6 (Servers)
+            // Web servers: IDs ending in 1, 4, 7
+            // Database servers: IDs ending in 2, 5, 8
+            // File servers: IDs ending in 3, 6, 9, 0
+
+            int mod = serverId % 10;
+            switch (mod)
+            {
+                case 1:
+                case 4:
+                case 7:
+                    return "Web";
+                case 2:
+                case 5:
+                case 8:
+                    return "Database";
+                case 3:
+                case 6:
+                case 9:
+                case 0:
+                    return "File";
+                default:
+                    return "Web"; // Default to Web
             }
         }
 
@@ -418,6 +465,12 @@ namespace NetworkService.ViewModel
                 File.AppendAllText(logPath, logEntry);
             }
             catch { }
+        }
+
+        public void Dispose()
+        {
+            isListening = false;
+            listeningThread?.Join(1000);
         }
     }
 }

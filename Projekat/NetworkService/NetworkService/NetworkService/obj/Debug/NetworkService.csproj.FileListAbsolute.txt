@@ -27,7 +27,6 @@ C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkSe
 C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.cache
 C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.lref
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.csproj.AssemblyReference.cache
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.exe.config
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\DisplayView.baml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\GraphView.baml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\App.baml
@@ -55,3 +54,4 @@ C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkS.954836E0.Up2Date
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.exe
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.pdb
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.exe.config

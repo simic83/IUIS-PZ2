@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using NetworkService.Common;
@@ -7,6 +8,45 @@ using NetworkService.ViewModel.Commands;
 
 namespace NetworkService.ViewModel
 {
+    public class ServerSlot : BindableBase
+    {
+        private Server server;
+        private int slotIndex;
+
+        public Server Server
+        {
+            get { return server; }
+            set
+            {
+                // Unsubscribe from old server
+                if (server != null)
+                {
+                    server.PropertyChanged -= OnServerPropertyChanged;
+                }
+
+                SetProperty(ref server, value);
+
+                // Subscribe to new server
+                if (server != null)
+                {
+                    server.PropertyChanged += OnServerPropertyChanged;
+                }
+            }
+        }
+
+        public int SlotIndex
+        {
+            get { return slotIndex; }
+            set { SetProperty(ref slotIndex, value); }
+        }
+
+        private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Force UI update when server properties change
+            OnPropertyChanged(nameof(Server));
+        }
+    }
+
     public class ServerGroup
     {
         public string TypeName { get; set; }
@@ -22,13 +62,19 @@ namespace NetworkService.ViewModel
     {
         private MainWindowViewModel mainViewModel;
         private ObservableCollection<ServerGroup> groupedServers;
-        private Server[] displaySlots = new Server[12];
+        private ObservableCollection<ServerSlot> displaySlots;
         private Server draggedServer;
 
         public ObservableCollection<ServerGroup> GroupedServers
         {
             get { return groupedServers; }
             set { SetProperty(ref groupedServers, value); }
+        }
+
+        public ObservableCollection<ServerSlot> DisplaySlots
+        {
+            get { return displaySlots; }
+            set { SetProperty(ref displaySlots, value); }
         }
 
         public Server DraggedServer
@@ -42,10 +88,20 @@ namespace NetworkService.ViewModel
         public DisplayViewModel(MainWindowViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
+            InitializeSlots();
             InitializeCommands();
             RefreshGroupedServers();
 
             mainViewModel.Servers.CollectionChanged += (s, e) => RefreshGroupedServers();
+        }
+
+        private void InitializeSlots()
+        {
+            DisplaySlots = new ObservableCollection<ServerSlot>();
+            for (int i = 0; i < 12; i++)
+            {
+                DisplaySlots.Add(new ServerSlot { SlotIndex = i });
+            }
         }
 
         private void InitializeCommands()
@@ -73,20 +129,17 @@ namespace NetworkService.ViewModel
             {
                 if (slotIndex < 12)
                 {
-                    displaySlots[slotIndex] = server;
+                    DisplaySlots[slotIndex].Server = server;
                     slotIndex++;
                 }
             }
-
-            OnPropertyChanged("DisplaySlots");
         }
 
         public void PlaceServerInSlot(Server server, int slotIndex)
         {
             if (slotIndex >= 0 && slotIndex < 12)
             {
-                displaySlots[slotIndex] = server;
-                OnPropertyChanged("DisplaySlots");
+                DisplaySlots[slotIndex].Server = server;
             }
         }
 
@@ -94,8 +147,7 @@ namespace NetworkService.ViewModel
         {
             if (slotIndex >= 0 && slotIndex < 12)
             {
-                displaySlots[slotIndex] = null;
-                OnPropertyChanged("DisplaySlots");
+                DisplaySlots[slotIndex].Server = null;
             }
         }
 
@@ -103,7 +155,7 @@ namespace NetworkService.ViewModel
         {
             if (slotIndex >= 0 && slotIndex < 12)
             {
-                return displaySlots[slotIndex];
+                return DisplaySlots[slotIndex].Server;
             }
             return null;
         }

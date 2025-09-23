@@ -23,6 +23,17 @@ namespace NetworkService.Views
             if (server != null && viewModel != null)
             {
                 viewModel.DraggedServer = server;
+                // Check if dragging from a slot
+                var parentBorder = border.Parent as Border;
+                if (parentBorder != null && parentBorder.Tag != null)
+                {
+                    viewModel.StartDragFromSlot((int)parentBorder.Tag);
+                }
+                else
+                {
+                    viewModel.StartDragFromSlot(-1); // Dragging from tree
+                }
+
                 DragDrop.DoDragDrop(border, server, DragDropEffects.Move);
             }
         }
@@ -32,6 +43,23 @@ namespace NetworkService.Views
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 Border_MouseLeftButtonDown(sender, null);
+            }
+        }
+
+        private void SlotBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var border = sender as Border;
+            if (border != null && viewModel != null)
+            {
+                int slotIndex = (int)border.Tag;
+                var server = viewModel.GetServerInSlot(slotIndex);
+
+                if (server != null)
+                {
+                    viewModel.DraggedServer = server;
+                    viewModel.StartDragFromSlot(slotIndex);
+                    DragDrop.DoDragDrop(border, server, DragDropEffects.Move);
+                }
             }
         }
 
@@ -57,32 +85,27 @@ namespace NetworkService.Views
 
                 if (server != null && border != null && viewModel != null)
                 {
-                    int slotIndex = int.Parse(border.Tag.ToString());
-                    viewModel.PlaceServerInSlot(server, slotIndex);
+                    int targetSlotIndex = (int)border.Tag;
+                    var existingServer = viewModel.GetServerInSlot(targetSlotIndex);
 
-                    // Update visual
-                    var contentPresenter = border.FindName($"slot{slotIndex}") as ContentPresenter;
-                    if (contentPresenter != null)
+                    if (viewModel.DraggedFromSlot >= 0)
                     {
-                        var serverDisplay = new Border
+                        // Dragging from another slot
+                        if (existingServer != null && existingServer != server)
                         {
-                            Background = new System.Windows.Media.SolidColorBrush(
-                                server.Status == "online" ? System.Windows.Media.Colors.DarkGreen :
-                                server.Status == "warning" ? System.Windows.Media.Colors.DarkOrange :
-                                System.Windows.Media.Colors.DarkRed),
-                            Padding = new Thickness(10),
-                            Child = new StackPanel
-                            {
-                                Children =
-                                {
-                                    new TextBlock { Text = server.Name, Foreground = System.Windows.Media.Brushes.White },
-                                    new TextBlock { Text = $"ID: {server.Id}", Foreground = System.Windows.Media.Brushes.LightGray },
-                                    new TextBlock { Text = server.MeasurementDisplay, Foreground = System.Windows.Media.Brushes.White }
-                                }
-                            }
-                        };
-                        contentPresenter.Content = serverDisplay;
+                            // Swap servers between slots
+                            viewModel.PlaceServerInSlot(existingServer, viewModel.DraggedFromSlot);
+                        }
+                        else if (existingServer == null)
+                        {
+                            // Clear the old slot
+                            viewModel.RemoveServerFromSlot(viewModel.DraggedFromSlot);
+                        }
                     }
+
+                    // Place the dragged server in the target slot
+                    viewModel.PlaceServerInSlot(server, targetSlotIndex);
+                    viewModel.StartDragFromSlot(-1); // Reset
                 }
             }
             e.Handled = true;
