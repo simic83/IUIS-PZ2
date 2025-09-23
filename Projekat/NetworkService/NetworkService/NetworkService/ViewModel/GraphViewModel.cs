@@ -18,38 +18,38 @@ namespace NetworkService.ViewModel
 
         public double Value
         {
-            get { return value; }
-            set { SetProperty(ref this.value, value); }
+            get => value;
+            set => SetProperty(ref this.value, value);
         }
 
         public DateTime Time
         {
-            get { return time; }
-            set { SetProperty(ref time, value); }
+            get => time;
+            set => SetProperty(ref time, value);
         }
 
         public double Height
         {
-            get { return height; }
-            set { SetProperty(ref height, value); }
+            get => height;
+            set => SetProperty(ref height, value);
         }
 
         public double X
         {
-            get { return x; }
-            set { SetProperty(ref x, value); }
+            get => x;
+            set => SetProperty(ref x, value);
         }
 
         public Brush Color
         {
-            get { return color; }
-            set { SetProperty(ref color, value); }
+            get => color;
+            set => SetProperty(ref color, value);
         }
 
         public string TimeLabel
         {
-            get { return timeLabel; }
-            set { SetProperty(ref timeLabel, value); }
+            get => timeLabel;
+            set => SetProperty(ref timeLabel, value);
         }
 
         public string ValueLabel => $"{Value:F0}%";
@@ -68,7 +68,7 @@ namespace NetworkService.ViewModel
 
         public Server SelectedServer
         {
-            get { return selectedServer; }
+            get => selectedServer;
             set
             {
                 SetProperty(ref selectedServer, value);
@@ -79,20 +79,20 @@ namespace NetworkService.ViewModel
 
         public ObservableCollection<MeasurementBar> MeasurementBars
         {
-            get { return measurementBars; }
-            set { SetProperty(ref measurementBars, value); }
+            get => measurementBars;
+            set => SetProperty(ref measurementBars, value);
         }
 
         public string GraphTitle
         {
-            get { return graphTitle; }
-            set { SetProperty(ref graphTitle, value); }
+            get => graphTitle;
+            set => SetProperty(ref graphTitle, value);
         }
 
         public string StatusInfo
         {
-            get { return statusInfo; }
-            set { SetProperty(ref statusInfo, value); }
+            get => statusInfo;
+            set => SetProperty(ref statusInfo, value);
         }
 
         public GraphViewModel(MainWindowViewModel mainViewModel)
@@ -112,7 +112,7 @@ namespace NetworkService.ViewModel
             var measurement = new MeasurementData(serverId, value);
             measurementHistory.Add(measurement);
 
-            // Keep only last 10 measurements per server (for smooth operation)
+            // zadrži poslednjih 10 po serveru
             var serverMeasurements = measurementHistory.Where(m => m.ServerId == serverId).ToList();
             if (serverMeasurements.Count > 10)
             {
@@ -131,11 +131,11 @@ namespace NetworkService.ViewModel
 
             var bars = new ObservableCollection<MeasurementBar>();
 
-            // Get last 5 measurements for selected server
+            // poslednjih 5 merenja za izabrani server
             var serverMeasurements = measurementHistory
                 .Where(m => m.ServerId == SelectedServer.Id)
                 .OrderByDescending(m => m.Timestamp)
-                .Take(5)  // Only last 5 measurements
+                .Take(5)
                 .Reverse()
                 .ToList();
 
@@ -145,11 +145,12 @@ namespace NetworkService.ViewModel
                 return;
             }
 
-            // Calculate bar positions and sizes
-            double barWidth = 60;  // Wider bars since we only have 5
-            double spacing = 100;   // More space between bars
-            double startX = 60;    // Start position for first bar
-            double maxHeight = 200;
+            // Usklađeno sa XAML koordinatama:
+            // X-osa je na Y=340, gornja referenca Y=20, dakle max visina = 340 - 20 = 320
+            double barWidth = 80;
+            double spacing = 60;   // možeš 60–100 po ukusu
+            double startX = 90;    // da stane lepo između X1=50 i X2=750
+            double maxHeight = 320;
 
             int index = 0;
             foreach (var measurement in serverMeasurements)
@@ -174,7 +175,7 @@ namespace NetworkService.ViewModel
         {
             if (isValid)
             {
-                // Green gradient for valid values
+                // green gradient
                 var brush = new LinearGradientBrush();
                 brush.StartPoint = new System.Windows.Point(0, 0);
                 brush.EndPoint = new System.Windows.Point(0, 1);
@@ -184,7 +185,7 @@ namespace NetworkService.ViewModel
             }
             else
             {
-                // Red gradient for out-of-range values
+                // red gradient
                 var brush = new LinearGradientBrush();
                 brush.StartPoint = new System.Windows.Point(0, 0);
                 brush.EndPoint = new System.Windows.Point(0, 1);

@@ -6,7 +6,7 @@
              Background="#1a1a1a">
 
     <UserControl.Resources>
-        <!-- Add the InvertedHeightConverter here -->
+        <!-- Ostaje tvoj konverter -->
         <converters:InvertedHeightConverter x:Key="InvertedHeightConverter"/>
     </UserControl.Resources>
 
@@ -26,18 +26,18 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Measurement Graph (Last 5 Values)" 
-                          FontWeight="Bold" Foreground="White" 
-                          VerticalAlignment="Center" Margin="0,0,20,0"/>
+                <TextBlock Grid.Column="0" Text="Measurement Graph (Last 5 Values)"
+                           FontWeight="Bold" Foreground="White"
+                           VerticalAlignment="Center" Margin="0,0,20,0"/>
 
-                <TextBlock Grid.Column="1" Text="Select Entity:" Foreground="#888" 
-                          VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Text="Select Entity:" Foreground="#888"
+                           VerticalAlignment="Center" Margin="0,0,10,0"/>
 
-                <ComboBox Grid.Column="2" ItemsSource="{Binding Servers}" 
-                         SelectedItem="{Binding SelectedServer}"
-                         DisplayMemberPath="Name" Width="200" HorizontalAlignment="Left"
-                         Background="#333" Foreground="White" BorderBrush="#555"
-                         Margin="0,0,10,0">
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Servers}"
+                          SelectedItem="{Binding SelectedServer}"
+                          DisplayMemberPath="Name" Width="200" HorizontalAlignment="Left"
+                          Background="#333" Foreground="White" BorderBrush="#555"
+                          Margin="0,0,10,0">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Setter Property="Background" Value="#333"/>
@@ -53,8 +53,8 @@
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <TextBlock Text="Current: " Foreground="#888"/>
-                    <TextBlock Text="{Binding SelectedServer.MeasurementDisplay}" 
-                              Foreground="White" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding SelectedServer.MeasurementDisplay}"
+                               Foreground="White" FontWeight="Bold"/>
                     <TextBlock Text="  Status: " Foreground="#888" Margin="10,0,0,0"/>
                     <TextBlock Text="{Binding SelectedServer.Status}" Foreground="White"/>
                     <TextBlock Text="  Type: " Foreground="#888" Margin="10,0,0,0"/>
@@ -71,37 +71,37 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Bar Chart Canvas - Increased size -->
-                <Canvas Grid.Row="0" Background="#1a1a1a" 
-                       Margin="80,20,20,20" ClipToBounds="False"
-                       Height="400" Width="800">
+                <!-- Bar Chart Canvas -->
+                <Canvas Grid.Row="0" Background="#1a1a1a"
+                        Margin="80,20,20,20" ClipToBounds="False"
+                        Height="400" Width="800">
 
                     <!-- Y-Axis -->
-                    <Line X1="50" Y1="20" X2="50" Y2="340" 
-                         Stroke="#666" StrokeThickness="2"/>
+                    <Line X1="50" Y1="20" X2="50" Y2="340"
+                          Stroke="#666" StrokeThickness="2"/>
 
-                    <!-- X-Axis -->
-                    <Line X1="50" Y1="340" X2="750" Y2="340" 
-                         Stroke="#666" StrokeThickness="2"/>
+                    <!-- X-Axis (baseline = 340) -->
+                    <Line X1="50" Y1="340" X2="750" Y2="340"
+                          Stroke="#666" StrokeThickness="2"/>
 
-                    <!-- Y-Axis Label - Centered at 50% -->
-                    <TextBlock Text="Values (%)" Canvas.Left="-20" Canvas.Top="165" 
-                              Foreground="#888" FontSize="12" FontWeight="Bold">
+                    <!-- Y-Axis Label -->
+                    <TextBlock Text="Values (%)" Canvas.Left="-20" Canvas.Top="165"
+                               Foreground="#888" FontSize="12" FontWeight="Bold">
                         <TextBlock.RenderTransform>
-                            <RotateTransform Angle="-90" CenterX="0" CenterY="0"/>
+                            <RotateTransform Angle="-90"/>
                         </TextBlock.RenderTransform>
                     </TextBlock>
 
                     <!-- X-Axis Label -->
-                    <TextBlock Text="Time (Last 5 Measurements)" Canvas.Left="350" Canvas.Top="365" 
-                              Foreground="#888" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Text="Time (Last 5 Measurements)" Canvas.Left="350" Canvas.Top="365"
+                               Foreground="#888" FontSize="12" FontWeight="Bold"/>
 
-                    <!-- Y-Axis Markers and Grid Lines -->
+                    <!-- Grid/Markers -->
                     <TextBlock Text="100" Canvas.Left="20" Canvas.Top="15" Foreground="#888" FontSize="11"/>
                     <Line X1="45" Y1="20" X2="55" Y2="20" Stroke="#666" StrokeThickness="1"/>
                     <Line X1="50" Y1="20" X2="750" Y2="20" Stroke="#333" StrokeThickness="0.5" StrokeDashArray="2,2"/>
 
-                    <!-- 75% marker - GREEN -->
+                    <!-- 75% -->
                     <TextBlock Text="75" Canvas.Left="25" Canvas.Top="95" Foreground="#0f4" FontSize="11" FontWeight="Bold"/>
                     <Line X1="45" Y1="100" X2="55" Y2="100" Stroke="#0f4" StrokeThickness="1.5"/>
                     <Line X1="50" Y1="100" X2="750" Y2="100" Stroke="#0f4" StrokeThickness="0.5" StrokeDashArray="4,2" Opacity="0.7"/>
@@ -110,7 +110,7 @@
                     <Line X1="45" Y1="180" X2="55" Y2="180" Stroke="#666" StrokeThickness="1"/>
                     <Line X1="50" Y1="180" X2="750" Y2="180" Stroke="#333" StrokeThickness="0.5" StrokeDashArray="2,2"/>
 
-                    <!-- 45% marker - GREEN -->
+                    <!-- 45% -->
                     <TextBlock Text="45" Canvas.Left="25" Canvas.Top="193" Foreground="#0f4" FontSize="11" FontWeight="Bold"/>
                     <Line X1="45" Y1="198" X2="55" Y2="198" Stroke="#0f4" StrokeThickness="1.5"/>
                     <Line X1="50" Y1="198" X2="750" Y2="198" Stroke="#0f4" StrokeThickness="0.5" StrokeDashArray="4,2" Opacity="0.7"/>
@@ -121,12 +121,12 @@
 
                     <TextBlock Text="0" Canvas.Left="30" Canvas.Top="335" Foreground="#888" FontSize="11"/>
 
-                    <!-- Valid Range Indicator (45-75%) - Subtle background only -->
-                    <Rectangle Canvas.Left="50" Canvas.Top="100" 
-                              Width="700" Height="98" 
-                              Fill="#0f4" Opacity="0.05"/>
+                    <!-- Valid Range background (45–75%) -->
+                    <Rectangle Canvas.Left="50" Canvas.Top="100"
+                               Width="700" Height="98"
+                               Fill="#0f4" Opacity="0.05"/>
 
-                    <!-- Bars Container -->
+                    <!-- Bars -->
                     <ItemsControl ItemsSource="{Binding MeasurementBars}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -137,12 +137,13 @@
                             <DataTemplate>
                                 <Canvas>
                                     <!-- Bar -->
-                                    <Rectangle Width="80" 
-                                              Height="{Binding Height}"
-                                              Fill="{Binding Color}">
+                                    <Rectangle Width="80"
+                                               Height="{Binding Height}"
+                                               Fill="{Binding Color}">
                                         <Rectangle.RenderTransform>
-                                            <TranslateTransform X="{Binding X}" 
-                                                              Y="{Binding Path=Height, Converter={StaticResource InvertedHeightConverter}}"/>
+                                            <TranslateTransform
+                                                X="{Binding X}"
+                                                Y="{Binding Path=Height, Converter={StaticResource InvertedHeightConverter}, ConverterParameter=340}"/>
                                         </Rectangle.RenderTransform>
                                         <Rectangle.Effect>
                                             <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.3"/>
@@ -157,25 +158,28 @@
                                         </Rectangle.ToolTip>
                                     </Rectangle>
 
-                                    <!-- Value Label on top of bar -->
-                                    <TextBlock Text="{Binding ValueLabel}" 
-                                              Foreground="White" 
-                                              FontSize="11"
-                                              FontWeight="Bold">
+                                    <!-- Value label (podignuta 18px iznad vrha stuba) -->
+                                    <TextBlock Text="{Binding ValueLabel}"
+                                               Foreground="White"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               TextAlignment="Center">
                                         <TextBlock.RenderTransform>
-                                            <TranslateTransform X="{Binding X}" 
-                                                              Y="{Binding Path=Height, Converter={StaticResource InvertedHeightConverter}}"/>
+                                            <TransformGroup>
+                                                <TranslateTransform
+                                                    X="{Binding X}"
+                                                    Y="{Binding Path=Height, Converter={StaticResource InvertedHeightConverter}, ConverterParameter=340}"/>
+                                                <TranslateTransform Y="-18"/>
+                                                <TranslateTransform X="25"/>
+                                            </TransformGroup>
                                         </TextBlock.RenderTransform>
-                                        <TextBlock.Margin>
-                                            <Thickness Left="25" Top="-18"/>
-                                        </TextBlock.Margin>
                                     </TextBlock>
                                 </Canvas>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <!-- Time Labels on X-axis -->
+                    <!-- Time labels on X-axis -->
                     <ItemsControl ItemsSource="{Binding MeasurementBars}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -184,31 +188,28 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding TimeLabel}" 
-                                          Foreground="#888" 
-                                          FontSize="10">
+                                <TextBlock Text="{Binding TimeLabel}"
+                                           Foreground="#888"
+                                           FontSize="10">
                                     <TextBlock.RenderTransform>
                                         <TranslateTransform X="{Binding X}" Y="345"/>
                                     </TextBlock.RenderTransform>
-                                    <TextBlock.Margin>
-                                        <Thickness Left="10"/>
-                                    </TextBlock.Margin>
                                 </TextBlock>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Canvas>
 
-                <!-- Legend - With more spacing from graph -->
+                <!-- Legend -->
                 <Border Grid.Row="1" Background="#1a1a1a" Padding="10" Margin="80,10,20,0">
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="20" Height="10" Fill="Lime" Margin="0,0,5,0"/>
                         <TextBlock Text="Valid (45-75%)" Foreground="#888" Margin="0,0,20,0"/>
                         <Rectangle Width="20" Height="10" Fill="#ff6464" Margin="0,0,5,0"/>
                         <TextBlock Text="Out of Range" Foreground="#888" Margin="0,0,20,0"/>
-                        <TextBlock Text="Chart updates in real-time (last 5 measurements)" 
-                                  Foreground="#666" 
-                                  HorizontalAlignment="Right" Margin="20,0,0,0"/>
+                        <TextBlock Text="Chart updates in real-time (last 5 measurements)"
+                                   Foreground="#666"
+                                   HorizontalAlignment="Right" Margin="20,0,0,0"/>
                     </StackPanel>
                 </Border>
             </Grid>
