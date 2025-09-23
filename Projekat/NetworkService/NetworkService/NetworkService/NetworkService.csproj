@@ -66,6 +66,7 @@
     <Compile Include="Model\MeasurementData.cs" />
     <Compile Include="Model\Server.cs" />
     <Compile Include="Model\ServerType.cs" />
+    <Compile Include="Services\ToastService.cs" />
     <Compile Include="ViewModel\Commands\MyICommand%28T%29.cs" />
     <Compile Include="ViewModel\Commands\MyICommand.cs" />
     <Compile Include="ViewModel\DisplayViewModel.cs" />
@@ -80,6 +81,9 @@
     </Compile>
     <Compile Include="Views\GraphView.xaml.cs">
       <DependentUpon>GraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ToastWindow.xaml.cs">
+      <DependentUpon>ToastWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ToastWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

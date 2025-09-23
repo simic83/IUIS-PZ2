@@ -1404,3 +1404,12 @@
 [2025-09-23 18:16:25] Measurement received - Server: 2, Value: 65%, Time: 23.9.2025. 18:16:25
 [2025-09-23 18:16:32] Measurement received - Server: 3, Value: 22%, Time: 23.9.2025. 18:16:32
 [2025-09-23 18:16:37] Measurement received - Server: 3, Value: 28%, Time: 23.9.2025. 18:16:37
+[2025-09-23 20:23:05] Server added: Nigger (ID: 22)
+[2025-09-23 20:25:03] Server added: nigger (ID: 20)
+[2025-09-23 20:26:24] Server removed: nigger (ID: 20)
+[2025-09-23 20:27:44] Server added: asdasd (ID: 2)
+[2025-09-23 20:28:05] Server added: sss (ID: 2)
+[2025-09-23 20:37:22] Server added: sdsdds (ID: 2)
+[2025-09-23 20:37:41] Server removed: sdsdds (ID: 2)
+[2025-09-23 20:38:17] Server added: sss (ID: 2)
+[2025-09-23 20:38:35] Server added: sdsdsd (ID: 22)

@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\App.xaml
-495962327
+5-520005400
 
-231342496825
+2532807240
 14-183043782
-MainWindow.xaml;Views\DisplayView.xaml;Views\EntitiesView.xaml;Views\GraphView.xaml;
+MainWindow.xaml;Views\DisplayView.xaml;Views\EntitiesView.xaml;Views\GraphView.xaml;Views\ToastWindow.xaml;
 
-False
+True
 

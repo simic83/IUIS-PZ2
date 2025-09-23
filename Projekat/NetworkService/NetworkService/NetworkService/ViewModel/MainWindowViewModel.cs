@@ -1,5 +1,6 @@
 ﻿using NetworkService.Common;
 using NetworkService.Model;
+using NetworkService.Services;
 using NetworkService.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
@@ -274,12 +275,14 @@ namespace NetworkService.ViewModel
         {
             Servers.Add(server);
             LogToFile($"Server added: {server.Name} (ID: {server.Id})");
+            ToastService.Success($"Server added: {server.Name} (ID: {server.Id:000}).");
         }
 
         public void RemoveServer(Server server)
         {
             Servers.Remove(server);
             LogToFile($"Server removed: {server.Name} (ID: {server.Id})");
+            ToastService.Info($"Server removed: {server.Name} (ID: {server.Id})");
         }
 
         public void AddUndoAction(ICommand command)
