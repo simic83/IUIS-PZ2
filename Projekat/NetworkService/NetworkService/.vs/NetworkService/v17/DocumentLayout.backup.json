@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\graphview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\graphview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -13,14 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\converters\\graphconverters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\converters\\graphconverters.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\entitiesview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\views\\displayview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -82,7 +82,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 18,
           "Children": [
             {
               "$type": "Bookmark",
@@ -114,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "GraphConverters.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Converters\\GraphConverters.cs",
               "RelativeDocumentMoniker": "NetworkService\\Converters\\GraphConverters.cs",
@@ -138,7 +138,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "GraphViewModel.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\GraphViewModel.cs",
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\GraphViewModel.cs",
@@ -222,7 +222,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "GraphView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\GraphView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\GraphView.xaml",
@@ -258,14 +258,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\MainWindow.xaml",
               "RelativeDocumentMoniker": "NetworkService\\MainWindow.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\MainWindow.xaml",
               "RelativeToolTip": "NetworkService\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T12:09:51.67Z"
+              "WhenOpened": "2025-09-22T12:09:51.67Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -293,14 +294,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "EntitiesView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\EntitiesView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\EntitiesView.xaml",
               "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\EntitiesView.xaml",
               "RelativeToolTip": "NetworkService\\Views\\EntitiesView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-22T10:30:43.375Z"
+              "WhenOpened": "2025-09-22T10:30:43.375Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
