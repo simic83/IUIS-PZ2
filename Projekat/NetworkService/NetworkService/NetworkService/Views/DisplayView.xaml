@@ -6,9 +6,10 @@
              Background="#1a1a1a">
 
     <UserControl.Resources>
-        <!-- Add the missing converters here -->
+        <!-- Converters -->
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
         <!-- Dark ComboBox Style -->
         <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
@@ -31,7 +32,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
     </UserControl.Resources>
 
     <Grid>
@@ -49,12 +49,12 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Entity Tree" FontWeight="Bold" 
-                          Foreground="White" Margin="10,10,10,5"/>
+                <TextBlock Grid.Row="0" Text="Entity Tree" FontWeight="Bold"
+                           Foreground="White" Margin="10,10,10,5"/>
 
-                <TreeView Grid.Row="1" ItemsSource="{Binding GroupedServers}" 
-                         Background="Transparent" Foreground="White"
-                         BorderThickness="0" Margin="5">
+                <TreeView Grid.Row="1" ItemsSource="{Binding GroupedServers}"
+                          Background="Transparent" Foreground="White"
+                          BorderThickness="0" Margin="5">
                     <TreeView.Resources>
                         <Style TargetType="TreeViewItem">
                             <Setter Property="Foreground" Value="White"/>
@@ -70,12 +70,22 @@
                             </StackPanel>
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#333" CornerRadius="3" Margin="2" 
-                                           Padding="5" MouseMove="Border_MouseMove"
-                                           MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                                    <Border Background="#333" CornerRadius="3" Margin="2"
+                                            Padding="5" MouseMove="Border_MouseMove"
+                                            MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#444"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Id, StringFormat='{}{0:000}'}" 
-                                                      Margin="0,0,5,0" Foreground="White"/>
+                                            <TextBlock Text="{Binding Id, StringFormat='{}{0:000}'}"
+                                                       Margin="0,0,5,0" Foreground="White"/>
                                             <TextBlock Text="{Binding Name}" Margin="0,0,5,0" Foreground="White"/>
                                             <TextBlock Text="(" Foreground="White"/>
                                             <TextBlock Text="{Binding MeasurementDisplay}" Foreground="White"/>
@@ -89,12 +99,12 @@
                 </TreeView>
 
                 <StackPanel Grid.Row="2" Orientation="Vertical" Margin="10">
-                    <Button Content="Auto Arrange" 
-                           Command="{Binding AutoArrangeCommand}"
-                           Background="#0a4" Foreground="White" Padding="10,5" Margin="0,0,0,5"/>
-                    <Button Content="Clear All Slots" 
-                           Command="{Binding ClearSlotsCommand}"
-                           Background="#444" Foreground="White" Padding="10,5"/>
+                    <Button Content="Auto Arrange"
+                            Command="{Binding AutoArrangeCommand}"
+                            Background="#0a4" Foreground="White" Padding="10,5" Margin="0,0,0,5"/>
+                    <Button Content="Clear All Slots"
+                            Command="{Binding ClearSlotsCommand}"
+                            Background="#444" Foreground="White" Padding="10,5"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -107,8 +117,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Network Display Grid (12+ slots)" 
-                          FontWeight="Bold" Foreground="White" Margin="10"/>
+                <TextBlock Grid.Row="0" Text="Network Display Grid (12 slots - Drag and Drop enabled)" FontWeight="Bold" Foreground="White" Margin="10"/>
 
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding DisplaySlots}" Margin="10">
                     <ItemsControl.ItemsPanel>
@@ -118,24 +127,150 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="#444" BorderThickness="1" Margin="5" 
-                                   AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver"
-                                   Background="#1a1a1a" Tag="{Binding SlotIndex}" MinHeight="100"
-                                   MouseLeftButtonDown="SlotBorder_MouseLeftButtonDown">
+                            <Border Margin="5"
+                                    AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver" DragLeave="Canvas_DragLeave"
+                                    Background="#1a1a1a" Tag="{Binding SlotIndex}" MinHeight="100"
+                                    MouseLeftButtonDown="SlotBorder_MouseLeftButtonDown"
+                                    MouseRightButtonDown="SlotBorder_MouseRightButtonDown">
+                                <!-- Jedan stil za “slot” border -->
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="#444"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Style.Triggers>
+                                            <!-- Normal dragging state for other slots -->
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                                                    <Condition Binding="{Binding IsDragOver}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                                <Setter Property="BorderBrush">
+                                                    <Setter.Value>
+                                                        <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                                            <DrawingBrush.Drawing>
+                                                                <DrawingGroup>
+                                                                    <GeometryDrawing Brush="#666">
+                                                                        <GeometryDrawing.Geometry>
+                                                                            <GeometryGroup>
+                                                                                <RectangleGeometry Rect="0,0,50,50"/>
+                                                                                <RectangleGeometry Rect="50,50,50,50"/>
+                                                                            </GeometryGroup>
+                                                                        </GeometryDrawing.Geometry>
+                                                                    </GeometryDrawing>
+                                                                </DrawingGroup>
+                                                            </DrawingBrush.Drawing>
+                                                        </DrawingBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </MultiDataTrigger>
+
+                                            <!-- Drag over state -->
+                                            <DataTrigger Binding="{Binding IsDragOver}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#0f0"/>
+                                                <Setter Property="BorderThickness" Value="3"/>
+                                                <Setter Property="Background" Value="#0a2a0a"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
                                 <Grid>
                                     <!-- Empty Slot Display -->
-                                    <TextBlock Text="{Binding SlotIndex, StringFormat='Slot {0}'}" 
-                                              Foreground="#555" 
-                                              HorizontalAlignment="Center" 
-                                              VerticalAlignment="Center"
-                                              Visibility="{Binding Server, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                    <Grid Visibility="{Binding Server, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <!-- Normal state when not dragging -->
+                                            <StackPanel>
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                <TextBlock Text="{Binding SlotIndex, StringFormat='Slot {0}'}"
+                                                           Foreground="#555" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <!-- Drag state - shows Drop Here -->
+                                            <StackPanel>
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                <!-- Drop icon -->
+                                                <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="24" Foreground="#888" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="Drop Here" FontSize="12" FontWeight="Bold"
+                                                           Foreground="#888" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
 
                                     <!-- Server Display when placed -->
                                     <Border Visibility="{Binding Server, Converter={StaticResource NotNullToVisibilityConverter}}"
-                                           Padding="10" CornerRadius="3">
-                                        <Border.Background>
-                                            <SolidColorBrush x:Name="StatusBrush" Color="#333"/>
-                                        </Border.Background>
+                                            Padding="10" CornerRadius="3"
+                                            ToolTip="Right-click to remove from slot">
+                                        <!-- SPOJEN stil: hover + status boje -->
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                <Setter Property="Background" Value="#333"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Opacity" Value="0.9"/>
+                                                    </Trigger>
+
+                                                    <DataTrigger Binding="{Binding Server.Status}" Value="online">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Color="#1a3a1a" Offset="0"/>
+                                                                    <GradientStop Color="#0a2a0a" Offset="1"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="BorderBrush" Value="#0f0"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding Server.Status}" Value="warning">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Color="#3a3a1a" Offset="0"/>
+                                                                    <GradientStop Color="#2a2a0a" Offset="1"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="BorderBrush" Value="#fa0"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding Server.Status}" Value="offline">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Color="#3a1a1a" Offset="0"/>
+                                                                    <GradientStop Color="#2a0a0a" Offset="1"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="BorderBrush" Value="#f00"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -145,33 +280,33 @@
 
                                             <!-- Server Info -->
                                             <StackPanel Grid.Row="0">
-                                                <TextBlock Text="{Binding Server.Name}" 
-                                                          FontWeight="Bold"
-                                                          Foreground="White" 
-                                                          HorizontalAlignment="Center"/>
-                                                <TextBlock Text="{Binding Server.Id, StringFormat='ID: {0:000}'}" 
-                                                          Foreground="LightGray" 
-                                                          FontSize="11"
-                                                          HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Server.Name}"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Server.Id, StringFormat='ID: {0:000}'}"
+                                                           Foreground="LightGray"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Center"/>
                                             </StackPanel>
 
                                             <!-- Measurement Display -->
-                                            <TextBlock Grid.Row="1" Text="{Binding Server.MeasurementDisplay}" 
-                                                      FontSize="18"
-                                                      FontWeight="Bold"
-                                                      Foreground="White" 
-                                                      HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding Server.MeasurementDisplay}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 
                                             <!-- Status -->
                                             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding Server.Type.Name}" 
-                                                          Foreground="LightGray" 
-                                                          FontSize="10"
-                                                          Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding Server.Type.Name}"
+                                                           Foreground="LightGray"
+                                                           FontSize="10"
+                                                           Margin="0,0,5,0"/>
                                                 <TextBlock Text="•" Foreground="Gray" Margin="0,0,5,0" FontSize="10"/>
-                                                <TextBlock Text="{Binding Server.Status}" 
-                                                          FontSize="10">
+                                                <TextBlock Text="{Binding Server.Status}"
+                                                           FontSize="10">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Style.Triggers>
@@ -190,48 +325,6 @@
                                                 </TextBlock>
                                             </StackPanel>
                                         </Grid>
-
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="BorderThickness" Value="2"/>
-                                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="online">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#1a3a1a" Offset="0"/>
-                                                                    <GradientStop Color="#0a2a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#0f0"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="warning">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#3a3a1a" Offset="0"/>
-                                                                    <GradientStop Color="#2a2a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#fa0"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="offline">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#3a1a1a" Offset="0"/>
-                                                                    <GradientStop Color="#2a0a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#f00"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
                                     </Border>
                                 </Grid>
                             </Border>

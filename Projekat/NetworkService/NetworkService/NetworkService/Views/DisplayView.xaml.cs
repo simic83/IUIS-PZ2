@@ -1,14 +1,16 @@
-﻿using System.Windows;
+﻿using NetworkService.Model;
+using NetworkService.ViewModel;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using NetworkService.Model;
-using NetworkService.ViewModel;
 
 namespace NetworkService.Views
 {
     public partial class DisplayView : UserControl
     {
         private DisplayViewModel viewModel => DataContext as DisplayViewModel;
+        private Point startPoint;
 
         public DisplayView()
         {
@@ -17,24 +19,23 @@ namespace NetworkService.Views
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            startPoint = e.GetPosition(null);
             var border = sender as Border;
             var server = border?.DataContext as Server;
 
             if (server != null && viewModel != null)
             {
                 viewModel.DraggedServer = server;
-                // Check if dragging from a slot
-                var parentBorder = border.Parent as Border;
-                if (parentBorder != null && parentBorder.Tag != null)
-                {
-                    viewModel.StartDragFromSlot((int)parentBorder.Tag);
-                }
-                else
-                {
-                    viewModel.StartDragFromSlot(-1); // Dragging from tree
-                }
+                viewModel.StartDragFromSlot(-1); // Dragging from tree
+
+                // Change cursor to indicate dragging
+                Mouse.OverrideCursor = Cursors.Hand;
 
                 DragDrop.DoDragDrop(border, server, DragDropEffects.Move);
+
+                // Reset cursor
+                Mouse.OverrideCursor = null;
+                viewModel.EndDrag();
             }
         }
 
@@ -42,7 +43,13 @@ namespace NetworkService.Views
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Border_MouseLeftButtonDown(sender, null);
+                Point currentPosition = e.GetPosition(null);
+
+                if ((Math.Abs(currentPosition.X - startPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                     Math.Abs(currentPosition.Y - startPoint.Y) > SystemParameters.MinimumVerticalDragDistance))
+                {
+                    Border_MouseLeftButtonDown(sender, null);
+                }
             }
         }
 
@@ -58,7 +65,31 @@ namespace NetworkService.Views
                 {
                     viewModel.DraggedServer = server;
                     viewModel.StartDragFromSlot(slotIndex);
+
+                    // Change cursor to indicate dragging
+                    Mouse.OverrideCursor = Cursors.Hand;
+
                     DragDrop.DoDragDrop(border, server, DragDropEffects.Move);
+
+                    // Reset cursor
+                    Mouse.OverrideCursor = null;
+                    viewModel.EndDrag();
+                }
+            }
+        }
+
+        private void SlotBorder_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var border = sender as Border;
+            if (border != null && viewModel != null)
+            {
+                int slotIndex = (int)border.Tag;
+                var server = viewModel.GetServerInSlot(slotIndex);
+
+                if (server != null)
+                {
+                    // Simple right-click to remove from slot
+                    viewModel.RemoveServerFromSlot(slotIndex);
                 }
             }
         }
@@ -68,12 +99,30 @@ namespace NetworkService.Views
             if (e.Data.GetDataPresent(typeof(Server)))
             {
                 e.Effects = DragDropEffects.Move;
+
+                // Set drag over state for visual feedback
+                var border = sender as Border;
+                if (border != null && viewModel != null)
+                {
+                    int slotIndex = (int)border.Tag;
+                    viewModel.SetSlotDragOver(slotIndex, true);
+                }
             }
             else
             {
                 e.Effects = DragDropEffects.None;
             }
             e.Handled = true;
+        }
+
+        private void Canvas_DragLeave(object sender, DragEventArgs e)
+        {
+            var border = sender as Border;
+            if (border != null && viewModel != null)
+            {
+                int slotIndex = (int)border.Tag;
+                viewModel.SetSlotDragOver(slotIndex, false);
+            }
         }
 
         private void Canvas_Drop(object sender, DragEventArgs e)
@@ -105,7 +154,10 @@ namespace NetworkService.Views
 
                     // Place the dragged server in the target slot
                     viewModel.PlaceServerInSlot(server, targetSlotIndex);
-                    viewModel.StartDragFromSlot(-1); // Reset
+
+                    // Clear drag over state
+                    viewModel.SetSlotDragOver(targetSlotIndex, false);
+                    viewModel.EndDrag();
                 }
             }
             e.Handled = true;

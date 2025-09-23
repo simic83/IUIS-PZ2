@@ -12,6 +12,7 @@ namespace NetworkService.ViewModel
     {
         private Server server;
         private int slotIndex;
+        private bool isDragOver;
 
         public Server Server
         {
@@ -40,6 +41,12 @@ namespace NetworkService.ViewModel
             set { SetProperty(ref slotIndex, value); }
         }
 
+        public bool IsDragOver
+        {
+            get { return isDragOver; }
+            set { SetProperty(ref isDragOver, value); }
+        }
+
         private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // Force UI update when server properties change
@@ -63,13 +70,21 @@ namespace NetworkService.ViewModel
         private MainWindowViewModel mainViewModel;
         private ObservableCollection<ServerGroup> groupedServers;
         private ObservableCollection<ServerSlot> displaySlots;
-        private Server draggedServer;
         private Server _draggedServer;
+        private bool _isDragging;
+
         public Server DraggedServer
         {
             get => _draggedServer;
             set => SetProperty(ref _draggedServer, value);
         }
+
+        public bool IsDragging
+        {
+            get => _isDragging;
+            set => SetProperty(ref _isDragging, value);
+        }
+
         public ObservableCollection<ServerGroup> GroupedServers
         {
             get { return groupedServers; }
@@ -89,23 +104,9 @@ namespace NetworkService.ViewModel
             private set => SetProperty(ref _draggedFromSlot, value);
         }
 
-        // Method to track where the drag started from
-        public void StartDragFromSlot(int slotIndex)
-        {
-            DraggedFromSlot = slotIndex;
-        }
-
-        // Method to get server in a specific slot
-        public Server GetServerInSlot(int slotIndex)
-        {
-            if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
-            {
-                return DisplaySlots[slotIndex].Server;
-            }
-            return null;
-        }
-
         public ICommand AutoArrangeCommand { get; set; }
+        public ICommand ClearSlotsCommand { get; set; }
+        public ICommand RemoveFromSlotCommand { get; set; }
 
         public DisplayViewModel(MainWindowViewModel mainViewModel)
         {
@@ -114,7 +115,19 @@ namespace NetworkService.ViewModel
             InitializeCommands();
             RefreshGroupedServers();
 
-            mainViewModel.Servers.CollectionChanged += (s, e) => RefreshGroupedServers();
+            // Subscribe to collection changes
+            mainViewModel.Servers.CollectionChanged += (s, e) =>
+            {
+                RefreshGroupedServers();
+                // Remove deleted servers from slots
+                if (e.OldItems != null)
+                {
+                    foreach (Server server in e.OldItems)
+                    {
+                        RemoveServerFromAllSlots(server);
+                    }
+                }
+            };
         }
 
         private void InitializeSlots()
@@ -129,6 +142,7 @@ namespace NetworkService.ViewModel
         private void InitializeCommands()
         {
             AutoArrangeCommand = new MyICommand(AutoArrange);
+            ClearSlotsCommand = new MyICommand(ClearSlots);
         }
 
         private void RefreshGroupedServers()
@@ -144,12 +158,57 @@ namespace NetworkService.ViewModel
             GroupedServers = new ObservableCollection<ServerGroup>(groups);
         }
 
+        // Method to track where the drag started from
+        public void StartDragFromSlot(int slotIndex)
+        {
+            DraggedFromSlot = slotIndex;
+            IsDragging = true;
+        }
+
+        public void EndDrag()
+        {
+            IsDragging = false;
+            DraggedFromSlot = -1;
+            // Clear all drag over states
+            foreach (var slot in DisplaySlots)
+            {
+                slot.IsDragOver = false;
+            }
+        }
+
+        public void SetSlotDragOver(int slotIndex, bool isDragOver)
+        {
+            if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
+            {
+                DisplaySlots[slotIndex].IsDragOver = isDragOver;
+            }
+        }
+
+        // Method to get server in a specific slot
+        public Server GetServerInSlot(int slotIndex)
+        {
+            if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
+            {
+                return DisplaySlots[slotIndex].Server;
+            }
+            return null;
+        }
+
         // Method to remove server from a specific slot
         public void RemoveServerFromSlot(int slotIndex)
         {
             if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
             {
                 DisplaySlots[slotIndex].Server = null;
+            }
+        }
+
+        // Command method to remove from slot by index
+        private void RemoveFromSlotByIndex(object parameter)
+        {
+            if (parameter is int slotIndex)
+            {
+                RemoveServerFromSlot(slotIndex);
             }
         }
 
@@ -177,7 +236,7 @@ namespace NetworkService.ViewModel
             DisplaySlots[slotIndex].Server = server;
         }
 
-        // Updated Auto Arrange Command (if you have this)
+        // Auto Arrange Command
         private void AutoArrange()
         {
             // Clear all slots first
@@ -209,6 +268,5 @@ namespace NetworkService.ViewModel
                 slot.Server = null;
             }
         }
-
     }
 }
