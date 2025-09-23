@@ -64,7 +64,12 @@ namespace NetworkService.ViewModel
         private ObservableCollection<ServerGroup> groupedServers;
         private ObservableCollection<ServerSlot> displaySlots;
         private Server draggedServer;
-
+        private Server _draggedServer;
+        public Server DraggedServer
+        {
+            get => _draggedServer;
+            set => SetProperty(ref _draggedServer, value);
+        }
         public ObservableCollection<ServerGroup> GroupedServers
         {
             get { return groupedServers; }
@@ -77,10 +82,27 @@ namespace NetworkService.ViewModel
             set { SetProperty(ref displaySlots, value); }
         }
 
-        public Server DraggedServer
+        private int _draggedFromSlot = -1;
+        public int DraggedFromSlot
         {
-            get { return draggedServer; }
-            set { SetProperty(ref draggedServer, value); }
+            get => _draggedFromSlot;
+            private set => SetProperty(ref _draggedFromSlot, value);
+        }
+
+        // Method to track where the drag started from
+        public void StartDragFromSlot(int slotIndex)
+        {
+            DraggedFromSlot = slotIndex;
+        }
+
+        // Method to get server in a specific slot
+        public Server GetServerInSlot(int slotIndex)
+        {
+            if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
+            {
+                return DisplaySlots[slotIndex].Server;
+            }
+            return null;
         }
 
         public ICommand AutoArrangeCommand { get; set; }
@@ -122,42 +144,71 @@ namespace NetworkService.ViewModel
             GroupedServers = new ObservableCollection<ServerGroup>(groups);
         }
 
-        private void AutoArrange()
+        // Method to remove server from a specific slot
+        public void RemoveServerFromSlot(int slotIndex)
         {
-            int slotIndex = 0;
-            foreach (var server in mainViewModel.Servers)
+            if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
             {
-                if (slotIndex < 12)
+                DisplaySlots[slotIndex].Server = null;
+            }
+        }
+
+        // Helper method to remove a server from all slots (prevents duplicates)
+        private void RemoveServerFromAllSlots(Server server)
+        {
+            foreach (var slot in DisplaySlots)
+            {
+                if (slot.Server == server)
                 {
-                    DisplaySlots[slotIndex].Server = server;
-                    slotIndex++;
+                    slot.Server = null;
                 }
             }
         }
 
         public void PlaceServerInSlot(Server server, int slotIndex)
         {
-            if (slotIndex >= 0 && slotIndex < 12)
+            if (server == null || slotIndex < 0 || slotIndex >= DisplaySlots.Count)
+                return;
+
+            // First, remove the server from any existing slot to prevent duplicates
+            RemoveServerFromAllSlots(server);
+
+            // Place the server in the target slot
+            DisplaySlots[slotIndex].Server = server;
+        }
+
+        // Updated Auto Arrange Command (if you have this)
+        private void AutoArrange()
+        {
+            // Clear all slots first
+            foreach (var slot in DisplaySlots)
             {
-                DisplaySlots[slotIndex].Server = server;
+                slot.Server = null;
+            }
+
+            // Place servers in order
+            int slotIndex = 0;
+            foreach (var group in GroupedServers)
+            {
+                foreach (var server in group.Servers)
+                {
+                    if (slotIndex < DisplaySlots.Count)
+                    {
+                        DisplaySlots[slotIndex].Server = server;
+                        slotIndex++;
+                    }
+                }
             }
         }
 
-        public void RemoveServerFromSlot(int slotIndex)
+        // Clear Slots Command implementation
+        private void ClearSlots()
         {
-            if (slotIndex >= 0 && slotIndex < 12)
+            foreach (var slot in DisplaySlots)
             {
-                DisplaySlots[slotIndex].Server = null;
+                slot.Server = null;
             }
         }
 
-        public Server GetServerInSlot(int slotIndex)
-        {
-            if (slotIndex >= 0 && slotIndex < 12)
-            {
-                return DisplaySlots[slotIndex].Server;
-            }
-            return null;
-        }
     }
 }
