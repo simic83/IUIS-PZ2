@@ -32,6 +32,35 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Button Style for Connection Mode -->
+        <Style x:Key="ConnectionButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="#666" BorderThickness="1" CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0a6"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#0f0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -61,11 +90,9 @@
                         </Style>
                     </TreeView.Resources>
 
-                    <!-- Ikonice za Web/Database/File -->
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Servers}">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                <!-- Ikonica -->
                                 <TextBlock FontFamily="Segoe MDL2 Assets"
                                            Margin="0,0,6,0"
                                            VerticalAlignment="Center"
@@ -73,33 +100,27 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text" Value="&#xE7C3;"/>
-                                            <!-- default: file -->
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding TypeName}" Value="Web">
                                                     <Setter Property="Text" Value="&#xE774;"/>
-                                                    <!-- globus -->
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding TypeName}" Value="Database">
                                                     <Setter Property="Text" Value="&#xE7F8;"/>
-                                                    <!-- baza -->
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding TypeName}" Value="File">
                                                     <Setter Property="Text" Value="&#xE7C3;"/>
-                                                    <!-- fajl -->
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <!-- Naslov grupe i broj -->
                                 <TextBlock Text="{Binding TypeName}" Foreground="White"/>
                                 <TextBlock Text=" (" Foreground="White"/>
                                 <TextBlock Text="{Binding Servers.Count}" Foreground="White"/>
                                 <TextBlock Text=")" Foreground="White"/>
                             </StackPanel>
 
-                            <!-- Deca (serveri) -->
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate>
                                     <Border Background="#333" CornerRadius="3" Margin="2"
@@ -131,9 +152,12 @@
                 </TreeView>
 
                 <StackPanel Grid.Row="2" Orientation="Vertical" Margin="10">
-                    <Button Content="Auto Arrange"
-                            Command="{Binding AutoArrangeCommand}"
-                            Background="#0a4" Foreground="White" Padding="10,5" Margin="0,0,0,5"/>
+                    <ToggleButton Content="Connection Mode"
+                                  IsChecked="{Binding IsConnectionMode}"
+                                  Style="{StaticResource ConnectionButtonStyle}"/>
+                    <Button Content="Clear Connections"
+                            Command="{Binding ClearConnectionsCommand}"
+                            Background="#a44" Foreground="White" Padding="10,5" Margin="0,0,0,5"/>
                     <Button Content="Clear All Slots"
                             Command="{Binding ClearSlotsCommand}"
                             Background="#444" Foreground="White" Padding="10,5"/>
@@ -152,218 +176,247 @@
                 <TextBlock Grid.Row="0" Text="Network Display Grid (12 slots - Drag and Drop enabled)"
                            FontWeight="Bold" Foreground="White" Margin="10"/>
 
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding DisplaySlots}" Margin="10">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Rows="3" Columns="4"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="5"
-                                    AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver" DragLeave="Canvas_DragLeave"
-                                    Background="#1a1a1a" Tag="{Binding SlotIndex}" MinHeight="100"
-                                    MouseLeftButtonDown="SlotBorder_MouseLeftButtonDown"
-                                    MouseRightButtonDown="SlotBorder_MouseRightButtonDown">
-                                <!-- Jedan stil za “slot” border -->
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderBrush" Value="#444"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Style.Triggers>
-                                            <!-- Normal dragging state for other slots -->
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
-                                                    <Condition Binding="{Binding IsDragOver}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="BorderThickness" Value="2"/>
-                                                <Setter Property="BorderBrush">
-                                                    <Setter.Value>
-                                                        <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
-                                                            <DrawingBrush.Drawing>
-                                                                <DrawingGroup>
-                                                                    <GeometryDrawing Brush="#666">
-                                                                        <GeometryDrawing.Geometry>
-                                                                            <GeometryGroup>
-                                                                                <RectangleGeometry Rect="0,0,50,50"/>
-                                                                                <RectangleGeometry Rect="50,50,50,50"/>
-                                                                            </GeometryGroup>
-                                                                        </GeometryDrawing.Geometry>
-                                                                    </GeometryDrawing>
-                                                                </DrawingGroup>
-                                                            </DrawingBrush.Drawing>
-                                                        </DrawingBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </MultiDataTrigger>
+                <!-- Main display area with both slots and connections -->
+                <Grid Grid.Row="1" x:Name="MainDisplayGrid" Margin="10">
+                    <!-- Grid of Slots (bottom layer) -->
+                    <ItemsControl x:Name="SlotsItemsControl" ItemsSource="{Binding DisplaySlots}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="3" Columns="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="5"
+                                        AllowDrop="True" Drop="Canvas_Drop" DragOver="Canvas_DragOver" DragLeave="Canvas_DragLeave"
+                                        Background="#1a1a1a" Tag="{Binding SlotIndex}" MinHeight="100"
+                                        MouseLeftButtonDown="SlotBorder_MouseLeftButtonDown"
+                                        MouseRightButtonDown="SlotBorder_MouseRightButtonDown">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BorderBrush" Value="#444"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding DataContext.IsConnectionMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                                                        <Condition Binding="{Binding Server, Converter={StaticResource NotNullToVisibilityConverter}}" Value="Visible"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="BorderBrush" Value="#0af"/>
+                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                    <Setter Property="Cursor" Value="Cross"/>
+                                                </MultiDataTrigger>
 
-                                            <!-- Drag over state -->
-                                            <DataTrigger Binding="{Binding IsDragOver}" Value="True">
-                                                <Setter Property="BorderBrush" Value="#0f0"/>
-                                                <Setter Property="BorderThickness" Value="3"/>
-                                                <Setter Property="Background" Value="#0a2a0a"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                                                        <Condition Binding="{Binding IsDragOver}" Value="False"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                    <Setter Property="BorderBrush">
+                                                        <Setter.Value>
+                                                            <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                                                <DrawingBrush.Drawing>
+                                                                    <DrawingGroup>
+                                                                        <GeometryDrawing Brush="#666">
+                                                                            <GeometryDrawing.Geometry>
+                                                                                <GeometryGroup>
+                                                                                    <RectangleGeometry Rect="0,0,50,50"/>
+                                                                                    <RectangleGeometry Rect="50,50,50,50"/>
+                                                                                </GeometryGroup>
+                                                                            </GeometryDrawing.Geometry>
+                                                                        </GeometryDrawing>
+                                                                    </DrawingGroup>
+                                                                </DrawingBrush.Drawing>
+                                                            </DrawingBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiDataTrigger>
 
-                                <Grid>
-                                    <!-- Empty Slot Display -->
-                                    <Grid Visibility="{Binding Server, Converter={StaticResource NullToVisibilityConverter}}">
-                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <!-- Normal state when not dragging -->
-                                            <StackPanel>
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                                <TextBlock Text="{Binding SlotIndex, StringFormat='Slot {0}'}"
-                                                           Foreground="#555" HorizontalAlignment="Center"/>
-                                            </StackPanel>
+                                                <DataTrigger Binding="{Binding IsDragOver}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="#0f0"/>
+                                                    <Setter Property="BorderThickness" Value="3"/>
+                                                    <Setter Property="Background" Value="#0a2a0a"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
-                                            <!-- Drag state - shows Drop Here -->
-                                            <StackPanel>
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                                <!-- Drop icon -->
-                                                <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets"
-                                                           FontSize="24" Foreground="#888" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="Drop Here" FontSize="12" FontWeight="Bold"
-                                                           Foreground="#888" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <!-- Server Display when placed -->
-                                    <Border Visibility="{Binding Server, Converter={StaticResource NotNullToVisibilityConverter}}"
-                                            Padding="10" CornerRadius="3"
-                                            ToolTip="Right-click to remove from slot">
-                                        <!-- SPOJEN stil: hover + status boje -->
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Cursor" Value="Hand"/>
-                                                <Setter Property="BorderThickness" Value="2"/>
-                                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                                <Setter Property="Background" Value="#333"/>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Opacity" Value="0.9"/>
-                                                    </Trigger>
-
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="online">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#1a3a1a" Offset="0"/>
-                                                                    <GradientStop Color="#0a2a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#0f0"/>
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="warning">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#3a3a1a" Offset="0"/>
-                                                                    <GradientStop Color="#2a2a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#fa0"/>
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding Server.Status}" Value="offline">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#3a1a1a" Offset="0"/>
-                                                                    <GradientStop Color="#2a0a0a" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="BorderBrush" Value="#f00"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-
-                                            <!-- Server Info -->
-                                            <StackPanel Grid.Row="0">
-                                                <TextBlock Text="{Binding Server.Name}"
-                                                           FontWeight="Bold"
-                                                           Foreground="White"
-                                                           HorizontalAlignment="Center"/>
-                                                <TextBlock Text="{Binding Server.Id, StringFormat='ID: {0:000}'}"
-                                                           Foreground="LightGray"
-                                                           FontSize="11"
-                                                           HorizontalAlignment="Center"/>
-                                            </StackPanel>
-
-                                            <!-- Measurement Display -->
-                                            <TextBlock Grid.Row="1" Text="{Binding Server.MeasurementDisplay}"
-                                                       FontSize="18"
-                                                       FontWeight="Bold"
-                                                       Foreground="White"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
-
-                                            <!-- Status -->
-                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding Server.Type.Name}"
-                                                           Foreground="LightGray"
-                                                           FontSize="10"
-                                                           Margin="0,0,5,0"/>
-                                                <TextBlock Text="•" Foreground="Gray" Margin="0,0,5,0" FontSize="10"/>
-                                                <TextBlock Text="{Binding Server.Status}"
-                                                           FontSize="10">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
+                                    <Grid>
+                                        <!-- Empty Slot Display -->
+                                        <Grid Visibility="{Binding Server, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel>
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Setter Property="Visibility" Value="Visible"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Server.Status}" Value="online">
-                                                                    <Setter Property="Foreground" Value="#0f0"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Server.Status}" Value="warning">
-                                                                    <Setter Property="Foreground" Value="#fa0"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Server.Status}" Value="offline">
-                                                                    <Setter Property="Foreground" Value="#f00"/>
+                                                                <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
+                                                    </StackPanel.Style>
+                                                    <TextBlock Text="{Binding SlotIndex, StringFormat='Slot {0}'}"
+                                                               Foreground="#555" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+
+                                                <StackPanel>
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DataContext.IsDragging, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                    <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="24" Foreground="#888" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Drop Here" FontSize="12" FontWeight="Bold"
+                                                               Foreground="#888" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Grid>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+
+                                        <!-- Server Display when placed -->
+                                        <Border x:Name="ServerBorder" Visibility="{Binding Server, Converter={StaticResource NotNullToVisibilityConverter}}"
+                                                Padding="10" CornerRadius="3"
+                                                ToolTip="Right-click to remove from slot">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    <Setter Property="Background" Value="#333"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Opacity" Value="0.9"/>
+                                                        </Trigger>
+
+                                                        <DataTrigger Binding="{Binding Server.Status}" Value="online">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                        <GradientStop Color="#1a3a1a" Offset="0"/>
+                                                                        <GradientStop Color="#0a2a0a" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="BorderBrush" Value="#0f0"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Server.Status}" Value="warning">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                        <GradientStop Color="#3a3a1a" Offset="0"/>
+                                                                        <GradientStop Color="#2a2a0a" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="BorderBrush" Value="#fa0"/>
+                                                        </DataTrigger>
+
+                                                        <!-- Offline status with simple visual -->
+                                                        <DataTrigger Binding="{Binding Server.Status}" Value="offline">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                        <GradientStop Color="#3a1a1a" Offset="0"/>
+                                                                        <GradientStop Color="#2a0a0a" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="BorderBrush" Value="#f00"/>
+                                                            <Setter Property="Opacity" Value="0.7"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <StackPanel Grid.Row="0">
+                                                    <TextBlock Text="{Binding Server.Name}"
+                                                               FontWeight="Bold"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Server.Id, StringFormat='ID: {0:000}'}"
+                                                               Foreground="LightGray"
+                                                               FontSize="11"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+
+                                                <TextBlock Grid.Row="1" Text="{Binding Server.MeasurementDisplay}"
+                                                           FontSize="18"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+
+                                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Server.Type.Name}"
+                                                               Foreground="LightGray"
+                                                               FontSize="10"
+                                                               Margin="0,0,5,0"/>
+                                                    <TextBlock Text="•" Foreground="Gray" Margin="0,0,5,0" FontSize="10"/>
+                                                    <TextBlock Text="{Binding Server.Status}"
+                                                               FontSize="10">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Server.Status}" Value="online">
+                                                                        <Setter Property="Foreground" Value="#0f0"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Server.Status}" Value="warning">
+                                                                        <Setter Property="Foreground" Value="#fa0"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Server.Status}" Value="offline">
+                                                                        <Setter Property="Foreground" Value="#f00"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Canvas for Lines (top layer) -->
+                    <Canvas x:Name="ConnectionCanvas" IsHitTestVisible="False">
+                        <ItemsControl ItemsSource="{Binding Connections}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="{Binding StartPoint.X}" Y1="{Binding StartPoint.Y}"
+                                          X2="{Binding EndPoint.X}" Y2="{Binding EndPoint.Y}"
+                                          Stroke="#0af" StrokeThickness="2"
+                                          Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Line.Effect>
+                                            <DropShadowEffect Color="Cyan" ShadowDepth="0" BlurRadius="10"/>
+                                        </Line.Effect>
+                                    </Line>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Canvas>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
