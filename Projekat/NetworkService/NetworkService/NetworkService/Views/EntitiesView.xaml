@@ -34,30 +34,39 @@
         <sys:String x:Key="Glyph_Check">&#xE10B;</sys:String>
         <sys:String x:Key="Glyph_Cancel">&#xE10A;</sys:String>
 
-        <!-- RadioButton Style -->
+        <!-- Improved RadioButton Style with better hitbox -->
         <Style x:Key="DarkRadioButton" TargetType="RadioButton">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="MinHeight" Value="30"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="16" Height="16" 
-                                    BorderBrush="#888" BorderThickness="1" 
-                                    CornerRadius="8" Margin="0,0,5,0">
-                                <Ellipse x:Name="CheckMark" Width="8" Height="8" 
-                                         Fill="#0f0" Visibility="Collapsed"/>
-                            </Border>
-                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
-                        </Grid>
+                        <Border Background="Transparent" Padding="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Width="18" Height="18" 
+                                        BorderBrush="#888" BorderThickness="2" 
+                                        CornerRadius="9" Margin="0,0,8,0"
+                                        Background="#222">
+                                    <Ellipse x:Name="CheckMark" Width="10" Height="10" 
+                                             Fill="#0f0" Visibility="Collapsed"/>
+                                </Border>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.8"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -69,7 +78,7 @@
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#0a4"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Padding" Value="15,8"/>
             <Setter Property="Margin" Value="5,0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -103,9 +112,10 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="#555"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Margin" Value="0,5"/>
             <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -126,8 +136,9 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="#555"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -148,7 +159,7 @@
                                                     <ColumnDefinition/>
                                                     <ColumnDefinition Width="20"/>
                                                 </Grid.ColumnDefinitions>
-                                                <ContentPresenter Grid.Column="0" Margin="5,3"/>
+                                                <ContentPresenter Grid.Column="0" Margin="8,5"/>
                                                 <Path Grid.Column="1" Fill="White" Data="M 0 0 L 4 4 L 8 0 Z" 
                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Grid>
@@ -159,7 +170,7 @@
                             <ContentPresenter x:Name="ContentPresenter"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              Margin="5,3"
+                                              Margin="8,5"
                                               IsHitTestVisible="False"/>
                             <Popup x:Name="Popup" Placement="Bottom" 
                                    IsOpen="{TemplateBinding IsDropDownOpen}" 
@@ -182,7 +193,7 @@
         <Style TargetType="ComboBoxItem">
             <Setter Property="Background" Value="#333"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBoxItem">
@@ -206,22 +217,22 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="450"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Add New Entity Form -->
-        <Border Grid.Column="0" Background="#222" Margin="5" Padding="10" CornerRadius="8">
+        <!-- Add New Entity Form - Enlarged -->
+        <Border Grid.Column="0" Background="#222" Margin="10" Padding="20" CornerRadius="8">
             <StackPanel>
                 <!-- Title -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_MapPin}" FontSize="16"/>
-                    <TextBlock Text="Add New Entity (T6 - Servers)" FontWeight="Bold" Foreground="White"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                    <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_MapPin}" FontSize="18"/>
+                    <TextBlock Text="Add New Entity (T6 - Servers)" FontWeight="Bold" Foreground="White" FontSize="16"/>
                 </StackPanel>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -234,36 +245,36 @@
                     </Grid.RowDefinitions>
 
                     <!-- ID -->
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Key}" Foreground="#888" FontSize="12"/>
-                        <TextBlock Text="ID" Foreground="#888"/>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,8">
+                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Key}" Foreground="#888" FontSize="14"/>
+                        <TextBlock Text="ID" Foreground="#888" FontSize="14"/>
                     </StackPanel>
                     <TextBox Grid.Row="0" Grid.Column="1" 
                              Text="{Binding NewServer.Id}"
                              Style="{StaticResource DarkTextBox}"/>
 
                     <!-- Name -->
-                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tag}" Foreground="#888" FontSize="12"/>
-                        <TextBlock Text="Name" Foreground="#888"/>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,8">
+                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tag}" Foreground="#888" FontSize="14"/>
+                        <TextBlock Text="Name" Foreground="#888" FontSize="14"/>
                     </StackPanel>
                     <TextBox Grid.Row="1" Grid.Column="1" 
                              Text="{Binding NewServer.Name}"
                              Style="{StaticResource DarkTextBox}"/>
 
                     <!-- IP -->
-                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Globe}" Foreground="#888" FontSize="12"/>
-                        <TextBlock Text="IP" Foreground="#888"/>
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,8">
+                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Globe}" Foreground="#888" FontSize="14"/>
+                        <TextBlock Text="IP" Foreground="#888" FontSize="14"/>
                     </StackPanel>
                     <TextBox Grid.Row="2" Grid.Column="1" 
                              Text="{Binding NewServer.IPAddress}"
                              Style="{StaticResource DarkTextBox}"/>
 
                     <!-- Type -->
-                    <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Server}" Foreground="#888" FontSize="12"/>
-                        <TextBlock Text="Type" Foreground="#888"/>
+                    <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,8">
+                        <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Server}" Foreground="#888" FontSize="14"/>
+                        <TextBlock Text="Type" Foreground="#888" FontSize="14"/>
                     </StackPanel>
                     <ComboBox Grid.Row="3" Grid.Column="1"
                               ItemsSource="{Binding ServerTypes}"
@@ -272,12 +283,12 @@
 
                     <!-- Buttons -->
                     <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal"
-                                HorizontalAlignment="Right" Margin="0,10">
+                                HorizontalAlignment="Right" Margin="0,20">
                         <Button Command="{Binding AddServerCommand}"
                                 Style="{StaticResource ActionButtonStyle}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Add}" FontSize="12"/>
-                                <TextBlock Text="Add"/>
+                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Add}" FontSize="14"/>
+                                <TextBlock Text="Add" FontSize="13"/>
                             </StackPanel>
                         </Button>
 
@@ -285,8 +296,8 @@
                                 Style="{StaticResource ActionButtonStyle}"
                                 Background="#a40">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Delete}" FontSize="12"/>
-                                <TextBlock Text="Delete"/>
+                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Delete}" FontSize="14"/>
+                                <TextBlock Text="Delete" FontSize="13"/>
                             </StackPanel>
                         </Button>
 
@@ -294,8 +305,8 @@
                                 Style="{StaticResource ActionButtonStyle}"
                                 Background="#444">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Undo}" FontSize="12"/>
-                                <TextBlock Text="Undo"/>
+                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Undo}" FontSize="14"/>
+                                <TextBlock Text="Undo" FontSize="13"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -308,14 +319,14 @@
                                    Text="{StaticResource Glyph_Warning}" 
                                    Foreground="Red" FontSize="12"/>
                         <TextBlock Text="{Binding ValidationMessage}" 
-                                   Foreground="Red" FontSize="11" Margin="0,5"/>
+                                   Foreground="Red" FontSize="12" Margin="0,5"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
         </Border>
 
-        <!-- Search and Filtering -->
-        <Border Grid.Column="1" Background="#222" Margin="5" CornerRadius="8">
+        <!-- Search and Filtering - Enlarged -->
+        <Border Grid.Column="1" Background="#222" Margin="10" CornerRadius="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -323,7 +334,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Filter Section -->
-                <Border Background="#1a1a1a" Padding="15" CornerRadius="8,8,0,0">
+                <Border Background="#1a1a1a" Padding="20" CornerRadius="8,8,0,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -331,24 +342,24 @@
                         </Grid.RowDefinitions>
 
                         <!-- Title -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-                            <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Filter}" FontSize="14"/>
-                            <TextBlock Text="Search and Filtering" FontWeight="Bold" Foreground="White"/>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Filter}" FontSize="16"/>
+                            <TextBlock Text="Search and Filtering" FontWeight="Bold" Foreground="White" FontSize="16"/>
                         </StackPanel>
 
-                        <!-- Filter Controls - Properly Aligned -->
+                        <!-- Filter Controls - Better spacing and alignment -->
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="180"/>
-                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- Type Filter -->
                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tags}" Foreground="#888" FontSize="12"/>
-                                <TextBlock Text="Type:" Foreground="#888" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Tags}" Foreground="#888" FontSize="14"/>
+                                <TextBlock Text="Type:" Foreground="#888" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
 
                             <ComboBox Grid.Column="1" 
@@ -356,25 +367,28 @@
                                       SelectedItem="{Binding SelectedFilterType}"
                                       Style="{StaticResource DarkComboBox}"
                                       VerticalAlignment="Center"
-                                      Margin="5,0,20,0"/>
+                                      Margin="5,0,30,0"/>
 
                             <!-- ID Filter -->
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Sort}" Foreground="#888" FontSize="12"/>
-                                <TextBlock Text="ID Filter:" Foreground="#888" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Sort}" Foreground="#888" FontSize="14"/>
+                                <TextBlock Text="ID Filter:" Foreground="#888" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
                                 <RadioButton Content="&lt;" IsChecked="{Binding IsLessThan}" 
-                                           Style="{StaticResource DarkRadioButton}"/>
+                                           Style="{StaticResource DarkRadioButton}"
+                                           FontSize="14"/>
                                 <RadioButton Content="&gt;" IsChecked="{Binding IsGreaterThan}" 
-                                           Style="{StaticResource DarkRadioButton}"/>
+                                           Style="{StaticResource DarkRadioButton}"
+                                           FontSize="14"/>
                                 <RadioButton Content="=" IsChecked="{Binding IsEqualTo}" 
-                                           Style="{StaticResource DarkRadioButton}"/>
+                                           Style="{StaticResource DarkRadioButton}"
+                                           FontSize="14"/>
 
-                                <TextBlock Text="Value:" Foreground="#888" VerticalAlignment="Center" Margin="15,0,5,0"/>
+                                <TextBlock Text="Value:" Foreground="#888" VerticalAlignment="Center" Margin="20,0,8,0" FontSize="14"/>
                                 <TextBox Text="{Binding FilterIdValue, UpdateSourceTrigger=PropertyChanged}" 
-                                        Width="80" Style="{StaticResource DarkTextBox}" 
+                                        Width="100" Style="{StaticResource DarkTextBox}" 
                                         VerticalAlignment="Center" Margin="0"/>
                             </StackPanel>
                         </Grid>
@@ -390,20 +404,23 @@
                           Foreground="White" 
                           GridLinesVisibility="Horizontal"
                           CanUserAddRows="False" 
-                          Margin="10">
+                          Margin="15"
+                          FontSize="13">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#333"/>
                             <Setter Property="Foreground" Value="White"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="Padding" Value="8,5"/>
                             <Setter Property="BorderBrush" Value="#555"/>
                             <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            <Setter Property="FontSize" Value="14"/>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Setter Property="Background" Value="#222"/>
+                            <Setter Property="MinHeight" Value="35"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Background" Value="#333"/>
@@ -417,7 +434,7 @@
                     <DataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Padding" Value="5,2"/>
+                            <Setter Property="Padding" Value="8,4"/>
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="Transparent"/>
@@ -428,20 +445,20 @@
                     </DataGrid.CellStyle>
 
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Select" Binding="{Binding IsSelected}" Width="50"/>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type.Name}" Width="100"/>
-                        <DataGridTextColumn Header="IP Address" Binding="{Binding IPAddress}" Width="120"/>
-                        <DataGridTextColumn Header="Load %" Binding="{Binding MeasurementDisplay}" Width="80"/>
+                        <DataGridCheckBoxColumn Header="Select" Binding="{Binding IsSelected}" Width="60"/>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type.Name}" Width="120"/>
+                        <DataGridTextColumn Header="IP Address" Binding="{Binding IPAddress}" Width="150"/>
+                        <DataGridTextColumn Header="Load %" Binding="{Binding MeasurementDisplay}" Width="100"/>
 
                         <!-- Status with MDL2 -->
-                        <DataGridTemplateColumn Header="Status" Width="100">
+                        <DataGridTemplateColumn Header="Status" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <!-- Icon -->
-                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,5,0">
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
@@ -463,7 +480,7 @@
                                         </TextBlock>
 
                                         <!-- Status Text -->
-                                        <TextBlock Text="{Binding Status}">
+                                        <TextBlock Text="{Binding Status}" FontSize="13">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
@@ -489,11 +506,11 @@
 
                 <!-- Footer count -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom" Margin="15,5">
-                    <TextBlock Style="{StaticResource IconText}" Text="&#xE969;" Foreground="#888" FontSize="12"/>
-                    <TextBlock Text="Network Entities (" Foreground="#888" FontSize="11"/>
-                    <TextBlock Text="{Binding FilteredServers.Count}" Foreground="#888" FontSize="11"/>
-                    <TextBlock Text=" items)" Foreground="#888" FontSize="11"/>
+                            VerticalAlignment="Bottom" Margin="20,5">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE969;" Foreground="#888" FontSize="13"/>
+                    <TextBlock Text="Network Entities (" Foreground="#888" FontSize="12"/>
+                    <TextBlock Text="{Binding FilteredServers.Count}" Foreground="#888" FontSize="12"/>
+                    <TextBlock Text=" items)" Foreground="#888" FontSize="12"/>
                 </StackPanel>
             </Grid>
         </Border>

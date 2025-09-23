@@ -5,7 +5,7 @@
         xmlns:views="clr-namespace:NetworkService.Views"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="NetworkService Monitor" 
-        Height="650" Width="1100"
+        Height="900" Width="1600"
         Background="#1a1a1a"
         Foreground="White"
         WindowStartupLocation="CenterScreen">
@@ -94,7 +94,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="120"/>
+                <RowDefinition Height="150"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
