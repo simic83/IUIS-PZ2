@@ -113,6 +113,11 @@ namespace NetworkService.Model
             }
         }
 
+        public override string ToString()
+        {
+            return Name ?? base.ToString();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)

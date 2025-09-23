@@ -10,6 +10,92 @@
 
     <UserControl.Resources>
         <converters:InvertedHeightConverter x:Key="InvertedHeightConverter"/>
+
+        <!-- DarkComboBox (isti kao u EntitiesView) -->
+        <Style x:Key="DarkComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="3">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="20"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0" Margin="8,5"/>
+                                                <Path Grid.Column="1" Fill="White" Data="M 0 0 L 4 4 L 8 0 Z"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="ContentPresenter"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          Margin="8,5"
+                                          IsHitTestVisible="False"/>
+
+                            <Popup x:Name="Popup" Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               MinWidth="{Binding ActualWidth, ElementName=ToggleButton}">
+                                <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#333" BorderBrush="#555" BorderThickness="1">
+                                        <ScrollViewer>
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- (opciono) Usklađeni ComboBoxItem stil -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#555"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#444"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -35,11 +121,13 @@
                 <TextBlock Grid.Column="1" Text="Select Entity:" Foreground="#888"
                            VerticalAlignment="Center" Margin="0,0,10,0"/>
 
-                <ComboBox Grid.Column="2" ItemsSource="{Binding Servers}"
-                          SelectedItem="{Binding SelectedServer}"
-                          DisplayMemberPath="Name" Width="200" HorizontalAlignment="Left"
-                          Background="#333" Foreground="White" BorderBrush="#555"
-                          Margin="0,0,10,0">
+                <ComboBox Grid.Column="2"
+          ItemsSource="{Binding Servers}"
+          SelectedItem="{Binding SelectedServer}"
+          DisplayMemberPath="Name"
+          Width="200"
+          HorizontalAlignment="Left"
+          Style="{StaticResource DarkComboBox}">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Setter Property="Background" Value="#333"/>
