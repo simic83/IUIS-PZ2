@@ -293,41 +293,44 @@ namespace NetworkService.Views
                 return;
             }
 
+
             if (e.Data.GetDataPresent(typeof(Server)))
             {
                 var server = e.Data.GetData(typeof(Server)) as Server;
                 var border = sender as Border;
+
 
                 if (server != null && border != null && viewModel != null)
                 {
                     int targetSlotIndex = (int)border.Tag;
                     var existingServer = viewModel.GetServerInSlot(targetSlotIndex);
 
+
                     if (viewModel.DraggedFromSlot >= 0)
                     {
-                        // Dragging from another slot
+                        // Premeštanje sa drugog slota
                         if (existingServer != null && existingServer != server)
                         {
-                            // Swap servers between slots
+                            // SWAP: prebaci ono što je bilo na ciljnom u izvorni slot
                             viewModel.PlaceServerInSlot(existingServer, viewModel.DraggedFromSlot);
                         }
-                        else if (existingServer == null)
-                        {
-                            // Clear the old slot
-                            viewModel.RemoveServerFromSlot(viewModel.DraggedFromSlot);
-                        }
+                        // VAŽNO: više NE čistimo stari slot pozivom RemoveServerFromSlot
+                        // PlaceServerInSlot će sam skinuti "server" sa starog slota bez brisanja konekcija.
                     }
 
-                    // Place the dragged server in the target slot
+
+                    // Spusti prevučeni server u ciljni slot
                     viewModel.PlaceServerInSlot(server, targetSlotIndex);
 
-                    // Update connection points after drop
+
+                    // Osvježi tačke konekcija nakon drop-a
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         UpdateConnectionPoints();
                     }), DispatcherPriority.Background);
 
-                    // Clear drag over state
+
+                    // Očisti vizuelno stanje
                     viewModel.SetSlotDragOver(targetSlotIndex, false);
                     viewModel.EndDrag();
                 }

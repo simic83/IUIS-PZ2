@@ -337,14 +337,30 @@ namespace NetworkService.ViewModel
             if (server == null || slotIndex < 0 || slotIndex >= DisplaySlots.Count)
                 return;
 
+            // Store the server ID to preserve connections
+            int serverId = server.Id;
+
+            // Track if this server was already placed somewhere
+            bool wasAlreadyPlaced = DisplaySlots.Any(s => s.Server == server);
+
             // First, remove the server from any existing slot to prevent duplicates
-            RemoveServerFromAllSlots(server);
+            // But DON'T remove connections yet
+            foreach (var slot in DisplaySlots)
+            {
+                if (slot.Server == server)
+                {
+                    slot.Server = null;
+                }
+            }
 
             // Place the server in the target slot
             DisplaySlots[slotIndex].Server = server;
 
-            // Update connections to reflect new position
+            // Now update connection positions - the server is in its new slot
+            // so connections will properly update their positions
             UpdateConnectionPositions();
+
+            // Save the new configuration
             SaveConfiguration();
         }
 
@@ -429,7 +445,7 @@ namespace NetworkService.ViewModel
                 var slot1 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == connection.Server1Id);
                 var slot2 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == connection.Server2Id);
 
-                if (slot1 != null && slot2 != null)
+                if (slot1 != null && slot2 != null && slot1.Server != null && slot2.Server != null)
                 {
                     connection.StartPoint = slot1.CenterPoint;
                     connection.EndPoint = slot2.CenterPoint;
@@ -437,7 +453,15 @@ namespace NetworkService.ViewModel
                 }
                 else
                 {
-                    connection.IsVisible = false;
+                    // Don't immediately hide - this could be a temporary state during drag/drop
+                    // Only hide if the servers are actually removed from the collection
+                    var server1Exists = DisplaySlots.Any(s => s.Server?.Id == connection.Server1Id);
+                    var server2Exists = DisplaySlots.Any(s => s.Server?.Id == connection.Server2Id);
+
+                    if (!server1Exists || !server2Exists)
+                    {
+                        connection.IsVisible = false;
+                    }
                 }
             }
         }
