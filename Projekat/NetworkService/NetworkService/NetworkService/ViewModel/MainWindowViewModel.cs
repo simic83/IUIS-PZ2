@@ -150,7 +150,23 @@ namespace NetworkService.ViewModel
 
         private void FocusTerminal()
         {
-            AddTerminalOutput("Terminal focused");
+            // This will be called from the code-behind to actually focus the terminal
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var mainWindow = App.Current.MainWindow as MainWindow;
+                mainWindow?.FocusTerminalInput();
+            });
+
+            // Visual feedback that terminal is focused
+            if (!string.IsNullOrWhiteSpace(CurrentCommand))
+            {
+                // If there's text in the terminal, keep it
+                AddTerminalOutput("Terminal focused - continue typing...");
+            }
+            else
+            {
+                AddTerminalOutput("Terminal focused - ready for input");
+            }
         }
 
         private void ExecuteTerminal()
@@ -175,28 +191,88 @@ namespace NetworkService.ViewModel
             switch (parts[0])
             {
                 case "help":
-                    AddTerminalOutput("Available commands: list, status, ping, refresh, clear, help");
+                    AddTerminalOutput("Available commands:");
+                    AddTerminalOutput("  list              - List all servers");
+                    AddTerminalOutput("  status            - Show system status");
+                    AddTerminalOutput("  ping <server_id>  - Ping specific server");
+                    AddTerminalOutput("  navigate <tab>    - Navigate to tab (1=Entities, 2=Display, 3=Graph)");
+                    AddTerminalOutput("  refresh           - Refresh data");
+                    AddTerminalOutput("  clear             - Clear terminal output");
+                    AddTerminalOutput("  help              - Show this help message");
+                    AddTerminalOutput("");
+                    AddTerminalOutput("Keyboard shortcuts:");
+                    AddTerminalOutput("  Ctrl+T            - Focus terminal");
+                    AddTerminalOutput("  Ctrl+Tab          - Next tab");
+                    AddTerminalOutput("  Arrow Up/Down     - Navigate command history");
                     break;
+
+                case "navigate":
+                    if (parts.Length > 1)
+                    {
+                        NavigateToTab(parts[1]);
+                    }
+                    else
+                    {
+                        AddTerminalOutput("Usage: navigate <tab_number>");
+                        AddTerminalOutput("  1 = Entities, 2 = Display, 3 = Graph");
+                    }
+                    break;
+
                 case "list":
                     ListServers();
                     break;
+
                 case "status":
                     ShowStatus();
                     break;
+
                 case "ping":
                     if (parts.Length > 1)
                         PingServer(parts[1]);
                     else
                         AddTerminalOutput("Usage: ping <server_id>");
                     break;
+
                 case "refresh":
                     RefreshData();
                     break;
+
                 case "clear":
                     TerminalOutput.Clear();
                     break;
+
                 default:
                     AddTerminalOutput($"Unknown command: {parts[0]}");
+                    AddTerminalOutput("Type 'help' for available commands");
+                    break;
+            }
+        }
+
+        private void NavigateToTab(string tabParam)
+        {
+            switch (tabParam)
+            {
+                case "1":
+                case "entities":
+                    SwitchView(entitiesViewModel);
+                    AddTerminalOutput("Navigated to Entities tab");
+                    break;
+
+                case "2":
+                case "display":
+                    SwitchView(displayViewModel);
+                    AddTerminalOutput("Navigated to Display tab");
+                    break;
+
+                case "3":
+                case "graph":
+                    SwitchView(graphViewModel);
+                    AddTerminalOutput("Navigated to Graph tab");
+                    break;
+
+                default:
+                    AddTerminalOutput($"Invalid tab parameter: {tabParam}");
+                    AddTerminalOutput("Valid options: 1 (Entities), 2 (Display), 3 (Graph)");
                     break;
             }
         }
