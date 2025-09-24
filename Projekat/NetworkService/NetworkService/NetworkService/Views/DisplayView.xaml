@@ -152,15 +152,18 @@
                 </TreeView>
 
                 <StackPanel Grid.Row="2" Orientation="Vertical" Margin="10">
-                    <ToggleButton Content="Connection Mode"
-                                  IsChecked="{Binding IsConnectionMode}"
-                                  Style="{StaticResource ConnectionButtonStyle}"/>
-                    <Button Content="Clear Connections"
-                            Command="{Binding ClearConnectionsCommand}"
-                            Background="#a44" Foreground="White" Padding="10,5" Margin="0,0,0,5"/>
-                    <Button Content="Clear All Slots"
-                            Command="{Binding ClearSlotsCommand}"
-                            Background="#444" Foreground="White" Padding="10,5"/>
+                    <ToggleButton Content="Connection Mode (Ctrl+C)"
+              IsChecked="{Binding IsConnectionMode}"
+              Style="{StaticResource ConnectionButtonStyle}"
+              ToolTip="Toggle connection mode to link servers (Ctrl+C)"/>
+                    <Button Content="Clear Connections (Ctrl+K)"
+        Command="{Binding ClearConnectionsCommand}"
+        Background="#a44" Foreground="White" Padding="10,5" Margin="0,0,0,5"
+        ToolTip="Remove all server connections (Ctrl+K)"/>
+                    <Button Content="Clear All Slots (Ctrl+L)"
+        Command="{Binding ClearSlotsCommand}"
+        Background="#444" Foreground="White" Padding="10,5"
+        ToolTip="Remove all servers from display grid (Ctrl+L)"/>
                 </StackPanel>
             </Grid>
         </Border>

@@ -16,9 +16,11 @@
         <KeyBinding Key="D2" Modifiers="Ctrl" Command="{Binding SwitchToDisplayCommand}"/>
         <KeyBinding Key="D3" Modifiers="Ctrl" Command="{Binding SwitchToGraphCommand}"/>
         <KeyBinding Key="Z" Modifiers="Ctrl" Command="{Binding UndoCommand}"/>
-        <!-- Terminal focus (dodatak) -->
         <KeyBinding Key="T" Modifiers="Ctrl" Command="{Binding FocusTerminalCommand}"/>
         <KeyBinding Key="Tab" Modifiers="Ctrl" Command="{Binding NextTabCommand}"/>
+        <KeyBinding Key="C" Modifiers="Control" Command="{Binding ToggleConnectionModeCommand}"/>
+        <KeyBinding Key="K" Modifiers="Control" Command="{Binding ClearConnectionsCommand}"/>
+        <KeyBinding Key="L" Modifiers="Control" Command="{Binding ClearAllSlotsCommand}"/>
     </Window.InputBindings>
 
     <Window.Resources>
@@ -181,7 +183,7 @@
             <!-- Main Content Area -->
             <ContentControl Grid.Row="2" Content="{Binding CurrentViewModel}" Margin="10"/>
 
-            <!-- Terminal Panel (dodatak primijenjen) -->
+            <!-- Terminal Panel -->
             <Border Grid.Row="3" Background="#0a0a0a" BorderBrush="#2a2a2a" 
                     BorderThickness="0,1,0,0" Margin="5" CornerRadius="4">
                 <Grid>
@@ -202,7 +204,90 @@
                     </Border>
 
                     <!-- Terminal Output -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="#0a0a0a">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  Background="#0a0a0a">
+                        <!-- TANKI TAMNI SCROLLBAR (ispravljena smernica) -->
+                        <ScrollViewer.Resources>
+                            <!-- Thumb izgled -->
+                            <Style TargetType="{x:Type Thumb}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Thumb}">
+                                            <Border CornerRadius="3" BorderThickness="1"
+                            Background="#3a3a3a" BorderBrush="#565656"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <!-- praktičnost: ne dozvoli da thumb postane premali -->
+                                <Setter Property="MinHeight" Value="18"/>
+                                <Setter Property="MinWidth" Value="18"/>
+                            </Style>
+
+                            <!-- ScrollBar (tanak i ispravne smernice) -->
+                            <Style TargetType="{x:Type ScrollBar}">
+                                <Setter Property="Background" Value="#151515"/>
+                                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                                <Setter Property="Width" Value="3"/>
+                                <!-- tanji vertikalni -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                            <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                <Track x:Name="PART_Track"
+                               Orientation="Vertical"
+                               IsDirectionReversed="True">
+                                                    <!-- KLJUČNO: ispravan smer -->
+                                                    <Track.DecreaseRepeatButton>
+                                                        <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}"
+                                              Background="Transparent" BorderThickness="0"/>
+                                                    </Track.DecreaseRepeatButton>
+                                                    <Track.Thumb>
+                                                        <Thumb/>
+                                                    </Track.Thumb>
+                                                    <Track.IncreaseRepeatButton>
+                                                        <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}"
+                                              Background="Transparent" BorderThickness="0"/>
+                                                    </Track.IncreaseRepeatButton>
+                                                </Track>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <!-- Horizontalni slučaj -->
+                                <Style.Triggers>
+                                    <Trigger Property="Orientation" Value="Horizontal">
+                                        <Setter Property="Height" Value="3"/>
+                                        <!-- tanji horizontalni -->
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                                    <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                        <Track x:Name="PART_Track"
+                                       Orientation="Horizontal"
+                                       IsDirectionReversed="False">
+                                                            <Track.DecreaseRepeatButton>
+                                                                <RepeatButton Command="{x:Static ScrollBar.LineLeftCommand}"
+                                                      Background="Transparent" BorderThickness="0"/>
+                                                            </Track.DecreaseRepeatButton>
+                                                            <Track.Thumb>
+                                                                <Thumb/>
+                                                            </Track.Thumb>
+                                                            <Track.IncreaseRepeatButton>
+                                                                <RepeatButton Command="{x:Static ScrollBar.LineRightCommand}"
+                                                      Background="Transparent" BorderThickness="0"/>
+                                                            </Track.IncreaseRepeatButton>
+                                                        </Track>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Resources>
+
                         <ItemsControl ItemsSource="{Binding TerminalOutput}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -218,7 +303,6 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10,5,5,5" VerticalAlignment="Center">
@@ -232,17 +316,14 @@
                                  Grid.Column="1" 
                                  Text="{Binding CurrentCommand, UpdateSourceTrigger=PropertyChanged}"
                                  Background="Transparent" Foreground="#0f0" BorderThickness="0"
-                                 FontFamily="Consolas" VerticalAlignment="Center" Padding="5">
+                                 FontFamily="Consolas" VerticalAlignment="Center" Padding="5"
+                                 AcceptsReturn="False">
                             <TextBox.InputBindings>
                                 <KeyBinding Key="Return" Command="{Binding ExecuteTerminalCommand}"/>
                                 <KeyBinding Key="Up" Command="{Binding NavigateHistoryUpCommand}"/>
                                 <KeyBinding Key="Down" Command="{Binding NavigateHistoryDownCommand}"/>
                             </TextBox.InputBindings>
                         </TextBox>
-
-                        <Button Grid.Column="2" Content="Execute" Command="{Binding ExecuteTerminalCommand}"
-                                Background="#0f0" Foreground="#000" Padding="10,5" Margin="5"
-                                FontWeight="Bold" Style="{StaticResource TabButtonStyle}"/>
                     </Grid>
                 </Grid>
             </Border>

@@ -33,6 +33,10 @@ namespace NetworkService.ViewModel
 
         private readonly string measurementLogPath = "measurements.txt";
 
+        public ICommand ToggleConnectionModeCommand { get; set; }
+        public ICommand ClearConnectionsCommand { get; set; }
+        public ICommand ClearAllSlotsCommand { get; set; }
+
         public ObservableCollection<Server> Servers
         {
             get { return servers; }
@@ -114,6 +118,32 @@ namespace NetworkService.ViewModel
             UndoCommand = new MyICommand(ExecuteUndo, () => undoStack.Count > 0);
             NextTabCommand = new MyICommand(NextTab);
             FocusTerminalCommand = new MyICommand(FocusTerminal);
+            ToggleConnectionModeCommand = new MyICommand(() =>
+            {
+                if (CurrentViewModel == displayViewModel)
+                {
+                    displayViewModel.IsConnectionMode = !displayViewModel.IsConnectionMode;
+                    AddTerminalOutput($"Connection Mode: {(displayViewModel.IsConnectionMode ? "ON" : "OFF")}");
+                }
+            });
+
+            ClearConnectionsCommand = new MyICommand(() =>
+            {
+                if (CurrentViewModel == displayViewModel)
+                {
+                    displayViewModel.ClearConnectionsCommand.Execute(null);
+                    AddTerminalOutput("Connections cleared");
+                }
+            });
+
+            ClearAllSlotsCommand = new MyICommand(() =>
+            {
+                if (CurrentViewModel == displayViewModel)
+                {
+                    displayViewModel.ClearSlotsCommand.Execute(null);
+                    AddTerminalOutput("All slots cleared");
+                }
+            });
         }
 
         private void InitializeViewModels()
