@@ -127,9 +127,17 @@ namespace NetworkService.ViewModel
 
         private void SwitchView(BindableBase viewModel)
         {
+            if (CurrentViewModel != null && CurrentViewModel != viewModel)
+            {
+                navigationHistory.Push(CurrentViewModel);
+            }
+
             CurrentViewModel = viewModel;
             string viewName = viewModel.GetType().Name.Replace("ViewModel", "");
-            AddTerminalOutput($"Switched to {viewName} view");
+            AddTerminalOutput($"→ Switched to {viewName} view");
+
+            // Clear pending actions when switching views
+            pendingRemovalServer = null;
         }
 
         private void NextTab()
@@ -186,31 +194,58 @@ namespace NetworkService.ViewModel
 
         private void ProcessTerminalCommand(string command)
         {
+            if (string.IsNullOrWhiteSpace(command)) return;
+
             string[] parts = command.ToLower().Split(' ');
 
             switch (parts[0])
             {
                 case "help":
-                    AddTerminalOutput("Available commands:");
-                    AddTerminalOutput("  list              - List all servers");
-                    AddTerminalOutput("  status            - Show system status");
-                    AddTerminalOutput("  ping <server_id>  - Ping specific server");
-                    AddTerminalOutput("  navigate <tab>    - Navigate to tab (1=Entities, 2=Display, 3=Graph)");
-                    AddTerminalOutput("  refresh           - Refresh data");
-                    AddTerminalOutput("  clear             - Clear terminal output");
-                    AddTerminalOutput("  help              - Show this help message");
-                    AddTerminalOutput("");
-                    AddTerminalOutput("Keyboard shortcuts:");
-                    AddTerminalOutput("  Ctrl+T            - Focus terminal");
-                    AddTerminalOutput("  Ctrl+Tab          - Next tab");
-                    AddTerminalOutput("  Arrow Up/Down     - Navigate command history");
+                    ShowHelp();
                     break;
 
+                // Entity Management (T6 - Servers)
+                case "add":
+                    if (parts.Length >= 5)
+                        AddServerCommand(parts);
+                    else
+                        AddTerminalOutput("Usage: add <id> <name> <type> <ip>");
+                    break;
+
+                case "remove":
+                    if (parts.Length > 1)
+                        RemoveServerCommand(parts[1]);
+                    else
+                        AddTerminalOutput("Usage: remove <id>");
+                    break;
+
+                case "list":
+                    ListServers();
+                    break;
+
+                // Search and Filter (P2)
+                case "search":
+                    if (parts.Length >= 3)
+                        SearchServers(parts[1], string.Join(" ", parts.Skip(2)));
+                    else
+                        AddTerminalOutput("Usage: search <name|type|id> <value>");
+                    break;
+
+                case "filter":
+                    if (parts.Length >= 3)
+                        ApplyFilter(parts);
+                    else
+                        AddTerminalOutput("Usage: filter <type|id> <operator> <value>");
+                    break;
+
+                case "reset":
+                    ResetFilters();
+                    break;
+
+                // Navigation
                 case "navigate":
                     if (parts.Length > 1)
-                    {
                         NavigateToTab(parts[1]);
-                    }
                     else
                     {
                         AddTerminalOutput("Usage: navigate <tab_number>");
@@ -218,10 +253,23 @@ namespace NetworkService.ViewModel
                     }
                     break;
 
-                case "list":
-                    ListServers();
+                case "back":
+                    NavigateBack();
                     break;
 
+                // Actions
+                case "undo":
+                    if (undoStack.Count > 0)
+                        ExecuteUndo();
+                    else
+                        AddTerminalOutput("No actions to undo");
+                    break;
+
+                case "confirm":
+                    ConfirmLastAction();
+                    break;
+
+                // System Commands
                 case "status":
                     ShowStatus();
                     break;
@@ -241,11 +289,409 @@ namespace NetworkService.ViewModel
                     TerminalOutput.Clear();
                     break;
 
+                case "export":
+                    ExportData();
+                    break;
+
+                case "stats":
+                    ShowStatistics();
+                    break;
+
                 default:
                     AddTerminalOutput($"Unknown command: {parts[0]}");
                     AddTerminalOutput("Type 'help' for available commands");
                     break;
             }
+        }
+
+        private void ShowHelp()
+        {
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("NetworkService Terminal - Available Commands");
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("");
+            AddTerminalOutput("ENTITY MANAGEMENT (T6 - Servers):");
+            AddTerminalOutput("  add <id> <name> <type> <ip>  - Add new server");
+            AddTerminalOutput("                                  Types: Web, Database, File");
+            AddTerminalOutput("  remove <id>                   - Remove server by ID");
+            AddTerminalOutput("  list                          - List all servers");
+            AddTerminalOutput("");
+            AddTerminalOutput("SEARCH & FILTER:");
+            AddTerminalOutput("  search name <text>            - Search by name");
+            AddTerminalOutput("  search type <type>            - Search by type");
+            AddTerminalOutput("  search id <id>                - Search by ID");
+            AddTerminalOutput("  filter type <type>            - Filter by server type");
+            AddTerminalOutput("  filter id < <value>           - Filter ID less than");
+            AddTerminalOutput("  filter id > <value>           - Filter ID greater than");
+            AddTerminalOutput("  filter id = <value>           - Filter ID equal to");
+            AddTerminalOutput("  reset                         - Clear all filters");
+            AddTerminalOutput("");
+            AddTerminalOutput("NAVIGATION:");
+            AddTerminalOutput("  navigate <1|2|3>              - Switch tabs");
+            AddTerminalOutput("                                  1=Entities, 2=Display, 3=Graph");
+            AddTerminalOutput("  back                          - Return to previous view");
+            AddTerminalOutput("");
+            AddTerminalOutput("ACTIONS:");
+            AddTerminalOutput("  undo                          - Undo last action");
+            AddTerminalOutput("  confirm                       - Confirm pending action");
+            AddTerminalOutput("  ping <id>                     - Ping server");
+            AddTerminalOutput("  status                        - Show system status");
+            AddTerminalOutput("  stats                         - Show statistics");
+            AddTerminalOutput("  refresh                       - Refresh data");
+            AddTerminalOutput("  export                        - Export data to file");
+            AddTerminalOutput("  clear                         - Clear terminal");
+            AddTerminalOutput("  help                          - Show this help");
+            AddTerminalOutput("");
+            AddTerminalOutput("KEYBOARD SHORTCUTS:");
+            AddTerminalOutput("  Ctrl+T                        - Focus terminal");
+            AddTerminalOutput("  Ctrl+Tab                      - Next tab");
+            AddTerminalOutput("  Arrow Up/Down                 - Navigate command history");
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+        }
+
+        private void AddServerCommand(string[] parts)
+        {
+            try
+            {
+                int id = int.Parse(parts[1]);
+                string name = parts[2];
+                string typeStr = parts[3];
+                string ip = parts[4];
+
+                // Check if ID already exists
+                if (Servers.Any(s => s.Id == id))
+                {
+                    AddTerminalOutput($"Error: Server with ID {id} already exists");
+                    return;
+                }
+
+                // Validate server type
+                ServerType type = null;
+                switch (typeStr.ToLower())
+                {
+                    case "web":
+                        type = new ServerType("Web", "/Resources/Images/web_server.png");
+                        break;
+                    case "database":
+                    case "db":
+                        type = new ServerType("Database", "/Resources/Images/database_server.png");
+                        break;
+                    case "file":
+                        type = new ServerType("File", "/Resources/Images/file_server.png");
+                        break;
+                    default:
+                        AddTerminalOutput($"Error: Invalid server type '{typeStr}'");
+                        AddTerminalOutput("Valid types: Web, Database, File");
+                        return;
+                }
+
+                // Validate IP address format
+                if (!IsValidIPAddress(ip))
+                {
+                    AddTerminalOutput($"Error: Invalid IP address format '{ip}'");
+                    return;
+                }
+
+                var server = new Server
+                {
+                    Id = id,
+                    Name = name,
+                    Type = type,
+                    IPAddress = ip,
+                    LastMeasurement = 0,
+                    LastUpdate = DateTime.Now
+                };
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    AddServer(server);
+                    AddTerminalOutput($"✓ Server added: {name} (ID: {id:000}, Type: {type.Name}, IP: {ip})");
+
+                    // Add to undo stack
+                    var undoAction = new MyICommand(() => RemoveServer(server));
+                    AddUndoAction(undoAction);
+                });
+            }
+            catch (FormatException)
+            {
+                AddTerminalOutput("Error: ID must be a valid number");
+            }
+            catch (Exception ex)
+            {
+                AddTerminalOutput($"Error adding server: {ex.Message}");
+            }
+        }
+
+        private void RemoveServerCommand(string idStr)
+        {
+            try
+            {
+                int id = int.Parse(idStr);
+                var server = Servers.FirstOrDefault(s => s.Id == id);
+
+                if (server != null)
+                {
+                    // Store for confirmation if needed
+                    pendingRemovalServer = server;
+                    AddTerminalOutput($"⚠ Warning: About to remove server '{server.Name}' (ID: {id:000})");
+                    AddTerminalOutput("Type 'confirm' to proceed or any other command to cancel");
+                }
+                else
+                {
+                    AddTerminalOutput($"Error: Server with ID {id} not found");
+                }
+            }
+            catch (FormatException)
+            {
+                AddTerminalOutput("Error: ID must be a valid number");
+            }
+        }
+
+        private Server pendingRemovalServer = null;
+
+        private void ConfirmLastAction()
+        {
+            if (pendingRemovalServer != null)
+            {
+                var server = pendingRemovalServer;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    RemoveServer(server);
+                    AddTerminalOutput($"✓ Server '{server.Name}' (ID: {server.Id:000}) removed successfully");
+
+                    // Add to undo stack
+                    var undoAction = new MyICommand(() => AddServer(server));
+                    AddUndoAction(undoAction);
+                });
+                pendingRemovalServer = null;
+            }
+            else
+            {
+                AddTerminalOutput("No pending action to confirm");
+            }
+        }
+
+        private void SearchServers(string searchType, string searchValue)
+        {
+            IEnumerable<Server> results = null;
+
+            switch (searchType)
+            {
+                case "name":
+                    results = Servers.Where(s => s.Name.ToLower().Contains(searchValue.ToLower()));
+                    AddTerminalOutput($"Searching for servers with name containing '{searchValue}':");
+                    break;
+
+                case "type":
+                    results = Servers.Where(s => s.Type.Name.ToLower().Equals(searchValue.ToLower()));
+                    AddTerminalOutput($"Searching for servers of type '{searchValue}':");
+                    break;
+
+                case "id":
+                    if (int.TryParse(searchValue, out int id))
+                    {
+                        results = Servers.Where(s => s.Id == id);
+                        AddTerminalOutput($"Searching for server with ID {id}:");
+                    }
+                    else
+                    {
+                        AddTerminalOutput("Error: ID must be a valid number");
+                        return;
+                    }
+                    break;
+
+                default:
+                    AddTerminalOutput($"Unknown search type: {searchType}");
+                    AddTerminalOutput("Valid types: name, type, id");
+                    return;
+            }
+
+            if (results != null && results.Any())
+            {
+                foreach (var server in results)
+                {
+                    AddTerminalOutput($"  {server.Id:000}: {server.Name} ({server.Type.Name}) - {server.IPAddress} [{server.Status}]");
+                }
+                AddTerminalOutput($"Found {results.Count()} result(s)");
+            }
+            else
+            {
+                AddTerminalOutput("No servers found matching the search criteria");
+            }
+        }
+
+        private void ApplyFilter(string[] parts)
+        {
+            if (CurrentViewModel == entitiesViewModel)
+            {
+                if (parts[1] == "type" && parts.Length >= 3)
+                {
+                    string filterType = parts[2];
+                    entitiesViewModel.SelectedFilterType =
+                        filterType.Equals("all", StringComparison.OrdinalIgnoreCase) ? "All" :
+                        filterType.Equals("web", StringComparison.OrdinalIgnoreCase) ? "Web" :
+                        filterType.Equals("database", StringComparison.OrdinalIgnoreCase) ? "Database" :
+                        filterType.Equals("file", StringComparison.OrdinalIgnoreCase) ? "File" :
+                        "All";
+
+                    AddTerminalOutput($"Filter applied: Type = {entitiesViewModel.SelectedFilterType}");
+                }
+                else if (parts[1] == "id" && parts.Length >= 4)
+                {
+                    string op = parts[2];
+                    if (int.TryParse(parts[3], out int value))
+                    {
+                        entitiesViewModel.FilterIdValue = value;
+
+                        switch (op)
+                        {
+                            case "<":
+                                entitiesViewModel.IsLessThan = true;
+                                AddTerminalOutput($"Filter applied: ID < {value}");
+                                break;
+                            case ">":
+                                entitiesViewModel.IsGreaterThan = true;
+                                AddTerminalOutput($"Filter applied: ID > {value}");
+                                break;
+                            case "=":
+                                entitiesViewModel.IsEqualTo = true;
+                                AddTerminalOutput($"Filter applied: ID = {value}");
+                                break;
+                            default:
+                                AddTerminalOutput("Invalid operator. Use <, >, or =");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        AddTerminalOutput("Error: Filter value must be a number");
+                    }
+                }
+            }
+            else
+            {
+                AddTerminalOutput("Filters can only be applied in the Entities view");
+                AddTerminalOutput("Switch to Entities view first: navigate 1");
+            }
+        }
+
+        private void ResetFilters()
+        {
+            if (CurrentViewModel == entitiesViewModel)
+            {
+                entitiesViewModel.SelectedFilterType = "All";
+                entitiesViewModel.FilterIdValue = 0;
+                entitiesViewModel.IsLessThan = false;
+                entitiesViewModel.IsGreaterThan = false;
+                entitiesViewModel.IsEqualTo = false;
+                AddTerminalOutput("✓ All filters have been reset");
+            }
+            else
+            {
+                AddTerminalOutput("Switch to Entities view to reset filters: navigate 1");
+            }
+        }
+
+        private Stack<BindableBase> navigationHistory = new Stack<BindableBase>();
+
+        private void NavigateBack()
+        {
+            if (navigationHistory.Count > 0)
+            {
+                var previousView = navigationHistory.Pop();
+                CurrentViewModel = previousView;
+
+                string viewName = previousView == entitiesViewModel ? "Entities" :
+                                 previousView == displayViewModel ? "Display" :
+                                 previousView == graphViewModel ? "Graph" : "Unknown";
+
+                AddTerminalOutput($"← Navigated back to {viewName} view");
+            }
+            else
+            {
+                AddTerminalOutput("No previous view in navigation history");
+            }
+        }
+
+        private void ShowStatistics()
+        {
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("System Statistics");
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+
+            int totalServers = Servers.Count;
+            int onlineCount = Servers.Count(s => s.Status == "online");
+            int warningCount = Servers.Count(s => s.Status == "warning");
+            int offlineCount = Servers.Count(s => s.Status == "offline");
+
+            var avgLoad = Servers.Where(s => s.LastMeasurement > 0).Average(s => s.LastMeasurement);
+            var maxLoad = Servers.Where(s => s.LastMeasurement > 0).Max(s => s.LastMeasurement);
+            var minLoad = Servers.Where(s => s.LastMeasurement > 0).Min(s => s.LastMeasurement);
+
+            AddTerminalOutput($"Total Servers:     {totalServers}");
+            AddTerminalOutput($"├─ Online:         {onlineCount} ({(totalServers > 0 ? onlineCount * 100 / totalServers : 0)}%)");
+            AddTerminalOutput($"├─ Warning:        {warningCount} ({(totalServers > 0 ? warningCount * 100 / totalServers : 0)}%)");
+            AddTerminalOutput($"└─ Offline:        {offlineCount} ({(totalServers > 0 ? offlineCount * 100 / totalServers : 0)}%)");
+            AddTerminalOutput("");
+            AddTerminalOutput("Load Statistics:");
+            AddTerminalOutput($"├─ Average Load:   {avgLoad:F1}%");
+            AddTerminalOutput($"├─ Maximum Load:   {maxLoad:F1}%");
+            AddTerminalOutput($"└─ Minimum Load:   {minLoad:F1}%");
+            AddTerminalOutput("");
+
+            // Server type distribution
+            var typeGroups = Servers.GroupBy(s => s.Type.Name);
+            AddTerminalOutput("Server Types:");
+            foreach (var group in typeGroups)
+            {
+                AddTerminalOutput($"├─ {group.Key}:        {group.Count()} servers");
+            }
+
+            AddTerminalOutput("");
+            AddTerminalOutput($"Undo Stack:        {undoStack.Count} action(s) available");
+            AddTerminalOutput($"Terminal History:  {CommandHistory.Count} command(s)");
+            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+        }
+
+        private void ExportData()
+        {
+            try
+            {
+                string exportPath = "network_export_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+                using (var writer = new System.IO.StreamWriter(exportPath))
+                {
+                    writer.WriteLine("ID,Name,Type,IP Address,Load (%),Status,Last Update");
+                    foreach (var server in Servers)
+                    {
+                        writer.WriteLine($"{server.Id},{server.Name},{server.Type.Name}," +
+                                       $"{server.IPAddress},{server.LastMeasurement:F0}," +
+                                       $"{server.Status},{server.LastUpdate:yyyy-MM-dd HH:mm:ss}");
+                    }
+                }
+                AddTerminalOutput($"✓ Data exported successfully to: {exportPath}");
+                AddTerminalOutput($"  Total servers exported: {Servers.Count}");
+            }
+            catch (Exception ex)
+            {
+                AddTerminalOutput($"Error exporting data: {ex.Message}");
+            }
+        }
+
+        private bool IsValidIPAddress(string ip)
+        {
+            if (string.IsNullOrWhiteSpace(ip))
+                return false;
+
+            string[] parts = ip.Split('.');
+            if (parts.Length != 4)
+                return false;
+
+            foreach (string part in parts)
+            {
+                if (!int.TryParse(part, out int num) || num < 0 || num > 255)
+                    return false;
+            }
+            return true;
         }
 
         private void NavigateToTab(string tabParam)
