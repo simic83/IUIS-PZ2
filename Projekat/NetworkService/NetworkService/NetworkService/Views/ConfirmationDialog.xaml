@@ -186,22 +186,6 @@
                 </Border>
             </StackPanel>
 
-            <!-- Warning Message -->
-            <StackPanel Grid.Row="2" 
-                        Orientation="Horizontal" 
-                        Margin="20,0,20,15"
-                        x:Name="WarningPanel"
-                        Visibility="Visible">
-                <TextBlock FontFamily="Segoe MDL2 Assets"
-                           Text="&#xE7BA;"
-                           Foreground="#f66"
-                           FontSize="12"
-                           Margin="0,0,8,0"/>
-                <TextBlock Text="This action cannot be undone!"
-                           Foreground="#f99"
-                           FontSize="12"/>
-            </StackPanel>
-
             <!-- Buttons -->
             <StackPanel Grid.Row="3" 
                         Orientation="Horizontal"

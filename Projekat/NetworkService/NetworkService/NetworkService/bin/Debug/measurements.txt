@@ -162,3 +162,9 @@ Timestamp, ID, Name, Type, IP, Address, Load(%), Status
 [12:11:59] 002, Server 002, Database, 192.168.1.12, 192.168.1.12, 77%, warning
 [12:12:04] 002, Server 002, Database, 192.168.1.12, 192.168.1.12, 14%, warning
 [12:12:08] 002, Server 002, Database, 192.168.1.12, 192.168.1.12, 41%, warning
+[20:57:09] 001, a, Database, 123.1.1.1, 123.1.1.1, 77%, warning
+[20:57:16] 001, a, Database, 123.1.1.1, 123.1.1.1, 20%, warning
+[20:57:20] 001, a, Database, 123.1.1.1, 123.1.1.1, 73%, online
+[20:57:26] 001, a, Database, 123.1.1.1, 123.1.1.1, 40%, warning
+[20:57:32] 001, a, Database, 123.1.1.1, 123.1.1.1, 55%, online
+[20:57:36] 001, a, Database, 123.1.1.1, 123.1.1.1, 62%, online

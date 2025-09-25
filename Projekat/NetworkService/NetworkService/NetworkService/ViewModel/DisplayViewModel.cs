@@ -139,6 +139,16 @@ namespace NetworkService.ViewModel
         }
     }
 
+    // Class for storing drag & drop undo information
+    public class DragDropUndoInfo
+    {
+        public int ServerId { get; set; }
+        public int? FromSlotIndex { get; set; } // null if from tree
+        public int? ToSlotIndex { get; set; }   // null if removed to tree
+        public int? SwappedServerId { get; set; } // if a swap occurred
+        public int? SwappedFromSlot { get; set; } // original slot of swapped server
+    }
+
     public class DisplayViewModel : BindableBase
     {
         private MainWindowViewModel mainViewModel;
@@ -317,7 +327,7 @@ namespace NetworkService.ViewModel
             return null;
         }
 
-        // Method to remove server from a specific slot
+        // Method to remove server from a specific slot (with undo support)
         public void RemoveServerFromSlot(int slotIndex)
         {
             if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
@@ -325,9 +335,21 @@ namespace NetworkService.ViewModel
                 var server = DisplaySlots[slotIndex].Server;
                 if (server != null)
                 {
+                    // Create undo info for removal
+                    var undoInfo = new DragDropUndoInfo
+                    {
+                        ServerId = server.Id,
+                        FromSlotIndex = slotIndex,
+                        ToSlotIndex = null // removed to tree
+                    };
+
                     DisplaySlots[slotIndex].Server = null;
                     RemoveConnectionsForServer(server.Id);
                     SaveConfiguration();
+
+                    // Add undo action
+                    var undoAction = new MyICommand(() => RestoreDragDrop(undoInfo));
+                    mainViewModel.AddUndoAction(undoAction);
                 }
             }
         }
@@ -353,6 +375,22 @@ namespace NetworkService.ViewModel
             // Store the server ID to preserve connections
             int serverId = server.Id;
 
+            // Create undo info
+            var undoInfo = new DragDropUndoInfo
+            {
+                ServerId = serverId,
+                FromSlotIndex = DraggedFromSlot >= 0 ? (int?)DraggedFromSlot : null,
+                ToSlotIndex = slotIndex
+            };
+
+            // Check if there's a server at the target slot (for swap)
+            var existingServer = DisplaySlots[slotIndex].Server;
+            if (existingServer != null && existingServer != server)
+            {
+                undoInfo.SwappedServerId = existingServer.Id;
+                undoInfo.SwappedFromSlot = slotIndex;
+            }
+
             // Track if this server was already placed somewhere
             bool wasAlreadyPlaced = DisplaySlots.Any(s => s.Server == server);
 
@@ -366,6 +404,13 @@ namespace NetworkService.ViewModel
                 }
             }
 
+            // Handle swap if needed
+            if (existingServer != null && existingServer != server && DraggedFromSlot >= 0)
+            {
+                // SWAP: place existing server in source slot
+                DisplaySlots[DraggedFromSlot].Server = existingServer;
+            }
+
             // Place the server in the target slot
             DisplaySlots[slotIndex].Server = server;
 
@@ -374,6 +419,56 @@ namespace NetworkService.ViewModel
             UpdateConnectionPositions();
 
             // Save the new configuration
+            SaveConfiguration();
+
+            // Add undo action
+            var undoAction = new MyICommand(() => RestoreDragDrop(undoInfo));
+            mainViewModel.AddUndoAction(undoAction);
+        }
+
+        // Restore drag & drop operation
+        private void RestoreDragDrop(DragDropUndoInfo undoInfo)
+        {
+            var server = mainViewModel.Servers.FirstOrDefault(s => s.Id == undoInfo.ServerId);
+            if (server == null) return;
+
+            // Clear server from current position
+            foreach (var slot in DisplaySlots)
+            {
+                if (slot.Server == server)
+                {
+                    slot.Server = null;
+                }
+            }
+
+            // Restore to original position
+            if (undoInfo.FromSlotIndex.HasValue)
+            {
+                // Was in a slot, restore to that slot
+                DisplaySlots[undoInfo.FromSlotIndex.Value].Server = server;
+            }
+            // If FromSlotIndex is null, it means it came from tree, so just leave it cleared
+
+            // Handle swap restoration if needed
+            if (undoInfo.SwappedServerId.HasValue && undoInfo.SwappedFromSlot.HasValue)
+            {
+                var swappedServer = mainViewModel.Servers.FirstOrDefault(s => s.Id == undoInfo.SwappedServerId.Value);
+                if (swappedServer != null)
+                {
+                    // Clear swapped server from wherever it is
+                    foreach (var slot in DisplaySlots)
+                    {
+                        if (slot.Server == swappedServer)
+                        {
+                            slot.Server = null;
+                        }
+                    }
+                    // Restore swapped server to its original position
+                    DisplaySlots[undoInfo.SwappedFromSlot.Value].Server = swappedServer;
+                }
+            }
+
+            UpdateConnectionPositions();
             SaveConfiguration();
         }
 

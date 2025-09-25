@@ -192,3 +192,12 @@
 [2025-09-25 20:32:55] Server added: a (ID: 1)
 [2025-09-25 20:43:23] Server added: b (ID: 2)
 [2025-09-25 20:43:33] Server added: a (ID: 1)
+[2025-09-25 20:56:29] Server added: a (ID: 1)
+[2025-09-25 20:57:09] Measurement received - Server: 1, Value: 77%, Time: 25.9.2025. 20:57:09
+[2025-09-25 20:57:16] Measurement received - Server: 1, Value: 20%, Time: 25.9.2025. 20:57:16
+[2025-09-25 20:57:20] Measurement received - Server: 1, Value: 73%, Time: 25.9.2025. 20:57:20
+[2025-09-25 20:57:22] Server removed: a (ID: 1)
+[2025-09-25 20:57:25] Server added: a (ID: 1)
+[2025-09-25 20:57:26] Measurement received - Server: 1, Value: 40%, Time: 25.9.2025. 20:57:26
+[2025-09-25 20:57:32] Measurement received - Server: 1, Value: 55%, Time: 25.9.2025. 20:57:32
+[2025-09-25 20:57:36] Measurement received - Server: 1, Value: 62%, Time: 25.9.2025. 20:57:36
