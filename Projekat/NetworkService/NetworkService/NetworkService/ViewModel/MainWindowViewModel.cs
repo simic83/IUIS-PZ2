@@ -20,7 +20,7 @@ namespace NetworkService.ViewModel
         private ObservableCollection<Server> servers;
         private ObservableCollection<string> terminalOutput;
         private ObservableCollection<string> commandHistory;
-        private Stack<ICommand> undoStack;
+        private ICommand lastUndoAction;
         private string currentCommand;
         private int historyIndex;
         private BindableBase currentViewModel;
@@ -103,7 +103,6 @@ namespace NetworkService.ViewModel
             Servers = new ObservableCollection<Server>();
             TerminalOutput = new ObservableCollection<string>();
             CommandHistory = new ObservableCollection<string>();
-            undoStack = new Stack<ICommand>();
 
             // Don't add initial mock servers - wait for MeteringStation data
             // The application should start with empty server list
@@ -117,7 +116,7 @@ namespace NetworkService.ViewModel
             ExecuteTerminalCommand = new MyICommand(ExecuteTerminal);
             NavigateHistoryUpCommand = new MyICommand(NavigateHistoryUp);
             NavigateHistoryDownCommand = new MyICommand(NavigateHistoryDown);
-            UndoCommand = new MyICommand(ExecuteUndo, () => undoStack.Count > 0);
+            UndoCommand = new MyICommand(ExecuteUndo, () => lastUndoAction != null);
             NextTabCommand = new MyICommand(NextTab);
             FocusTerminalCommand = new MyICommand(FocusTerminal);
             ToggleConnectionModeCommand = new MyICommand(() =>
@@ -303,10 +302,10 @@ namespace NetworkService.ViewModel
 
                 // Actions
                 case "undo":
-                    if (undoStack.Count > 0)
+                    if (lastUndoAction != null)
                         ExecuteUndo();
                     else
-                        AddTerminalOutput("No actions to undo");
+                        AddTerminalOutput("No action to undo");
                     break;
 
                 case "ping":
@@ -766,17 +765,18 @@ namespace NetworkService.ViewModel
 
         public void AddUndoAction(ICommand command)
         {
-            undoStack.Clear();
-            undoStack.Push(command);
+            lastUndoAction = command;  // Simply replace the last action
             ((MyICommand)UndoCommand).RaiseCanExecuteChanged();
         }
 
         private void ExecuteUndo()
         {
-            if (undoStack.Count > 0)
+            if (lastUndoAction != null)
             {
-                var command = undoStack.Pop();
-                command.Execute(null);
+                var action = lastUndoAction;
+                lastUndoAction = null;  // Clear after use
+
+                action.Execute(null);
                 AddTerminalOutput("Undo executed");
                 StatusMessage = "Action undone";
                 ((MyICommand)UndoCommand).RaiseCanExecuteChanged();

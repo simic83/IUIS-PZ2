@@ -350,15 +350,6 @@
                                 <TextBlock Text="Delete" FontSize="13"/>
                             </StackPanel>
                         </Button>
-
-                        <Button Command="{Binding UndoCommand}"
-                                Style="{StaticResource ActionButtonStyle}"
-                                Background="#444">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource IconText}" Text="{StaticResource Glyph_Undo}" FontSize="14"/>
-                                <TextBlock Text="Undo" FontSize="13"/>
-                            </StackPanel>
-                        </Button>
                     </StackPanel>
 
                     <!-- Validation -->
