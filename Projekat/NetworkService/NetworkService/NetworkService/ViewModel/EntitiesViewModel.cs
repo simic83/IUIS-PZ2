@@ -1,13 +1,16 @@
-﻿using System;
+﻿using NetworkService.Common;
+using NetworkService.Model;
+using NetworkService.Services;
+using NetworkService.ViewModel.Commands;
+using NetworkService.Views;
+using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
-using NetworkService.Common;
-using NetworkService.Model;
-using NetworkService.ViewModel.Commands;
-using System.Collections.Generic;
 
 namespace NetworkService.ViewModel
 {
@@ -181,7 +184,6 @@ namespace NetworkService.ViewModel
         {
             AddServerCommand = new MyICommand(AddServer);
             DeleteServerCommand = new MyICommand(DeleteServer, CanDeleteServer);
-            DeleteSelectedCommand = new MyICommand(DeleteSelectedServers, CanDeleteSelectedServers);
             UndoCommand = mainViewModel.UndoCommand;
         }
 
@@ -249,43 +251,26 @@ namespace NetworkService.ViewModel
         {
             if (SelectedServer != null)
             {
-                var server = SelectedServer;
-                mainViewModel.RemoveServer(server);
+                // Show confirmation dialog
+                var owner = Application.Current.MainWindow;
+                if (ConfirmationDialog.ShowDeleteConfirmation(SelectedServer, owner))
+                {
+                    var server = SelectedServer;
+                    mainViewModel.RemoveServer(server);
 
-                // Create undo action
-                var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
-                mainViewModel.AddUndoAction(undoAction);
+                    // Create undo action
+                    var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
+                    mainViewModel.AddUndoAction(undoAction);
+
+                    // Optional: Show toast notification
+                    ToastService.Info($"Server '{server.Name}' deleted");
+                }
             }
         }
 
         private bool CanDeleteServer()
         {
             return SelectedServer != null;
-        }
-
-        // New method to delete all selected servers
-        private void DeleteSelectedServers()
-        {
-            var selectedServers = mainViewModel.Servers.Where(s => s.IsSelected).ToList();
-
-            if (selectedServers.Count == 0)
-                return;
-
-            // Remove all selected servers
-            foreach (var server in selectedServers)
-            {
-                mainViewModel.RemoveServer(server);
-            }
-
-            // Create a single undo action that restores all deleted servers
-            var undoAction = new MyICommand(() =>
-            {
-                foreach (var server in selectedServers)
-                {
-                    mainViewModel.AddServer(server);
-                }
-            });
-            mainViewModel.AddUndoAction(undoAction);
         }
 
         private bool CanDeleteSelectedServers()
