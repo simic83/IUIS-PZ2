@@ -278,8 +278,30 @@ namespace NetworkService.ViewModel
             return mainViewModel.Servers.Any(s => s.IsSelected);
         }
 
+        // Helper method to validate IP address
+        private bool IsValidIPAddress(string ip)
+        {
+            if (string.IsNullOrWhiteSpace(ip))
+                return false;
+
+            string[] parts = ip.Split('.');
+            if (parts.Length != 4)
+                return false;
+
+            foreach (string part in parts)
+            {
+                if (!int.TryParse(part, out int num) || num < 0 || num > 255)
+                    return false;
+            }
+            return true;
+        }
+
         protected override void ValidateSelf()
         {
+            // Clear any previous validation errors
+            ValidationErrors.Clear();
+
+            // ID validation
             if (NewServer.Id <= 0)
             {
                 ValidationErrors["Server"] = "ID must be greater than 0";
@@ -288,14 +310,21 @@ namespace NetworkService.ViewModel
             {
                 ValidationErrors["Server"] = "ID already exists";
             }
+            // Name validation
             else if (string.IsNullOrWhiteSpace(NewServer.Name))
             {
                 ValidationErrors["Server"] = "Name is required";
             }
+            // IP Address validation
             else if (string.IsNullOrWhiteSpace(NewServer.IPAddress))
             {
                 ValidationErrors["Server"] = "IP Address is required";
             }
+            else if (!IsValidIPAddress(NewServer.IPAddress))
+            {
+                ValidationErrors["Server"] = "Invalid IP address format (e.g., 192.168.1.1)";
+            }
+            // Type validation
             else if (NewServer.Type == null)
             {
                 ValidationErrors["Server"] = "Type must be selected";

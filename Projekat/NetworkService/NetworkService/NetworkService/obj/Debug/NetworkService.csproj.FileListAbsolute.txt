@@ -58,3 +58,4 @@ C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkS.954836E0.Up2Date
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.exe
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.pdb
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.exe.config
