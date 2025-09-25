@@ -5,10 +5,11 @@ using NetworkService.ViewModel.Commands;
 using NetworkService.Views;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -25,6 +26,7 @@ namespace NetworkService.ViewModel
         private int filterIdValue;
         private bool isLessThan, isGreaterThan, isEqualTo;
         private string validationMessage;
+        private bool isRestoringState = false;
 
         public Server NewServer
         {
@@ -44,6 +46,8 @@ namespace NetworkService.ViewModel
             set { SetProperty(ref serverTypes, value); }
         }
 
+        public ICommand ClearFiltersCommand { get; set; }
+
         public ICollectionView FilteredServers
         {
             get { return filteredServers; }
@@ -56,8 +60,22 @@ namespace NetworkService.ViewModel
             get { return selectedFilterType; }
             set
             {
+                // Save current state for undo
+                var previousState = new FilterState
+                {
+                    FilterType = selectedFilterType,
+                    IdValue = filterIdValue,
+                    LessThan = isLessThan,
+                    GreaterThan = isGreaterThan,
+                    EqualTo = isEqualTo
+                };
+
                 SetProperty(ref selectedFilterType, value);
                 ApplyFilter();
+
+                // Add undo action
+                var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+                mainViewModel.AddUndoAction(undoAction);
             }
         }
 
@@ -66,10 +84,43 @@ namespace NetworkService.ViewModel
             get { return filterIdValue; }
             set
             {
-                SetProperty(ref filterIdValue, value);
-                // Always apply filter when value changes
-                ApplyFilter();
+                // Don't create undo action if value is being set programmatically during restore
+                if (!isRestoringState)
+                {
+                    // Save current state for undo
+                    var previousState = new FilterState
+                    {
+                        FilterType = selectedFilterType,
+                        IdValue = filterIdValue,
+                        LessThan = isLessThan,
+                        GreaterThan = isGreaterThan,
+                        EqualTo = isEqualTo
+                    };
+
+                    SetProperty(ref filterIdValue, value);
+                    ApplyFilter();
+
+                    // Add undo action only if value actually changed
+                    if (previousState.IdValue != value)
+                    {
+                        var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+                        mainViewModel.AddUndoAction(undoAction);
+                    }
+                }
+                else
+                {
+                    SetProperty(ref filterIdValue, value);
+                }
             }
+        }
+
+        private class FilterState
+        {
+            public string FilterType { get; set; }
+            public int IdValue { get; set; }
+            public bool LessThan { get; set; }
+            public bool GreaterThan { get; set; }
+            public bool EqualTo { get; set; }
         }
 
         public bool IsLessThan
@@ -77,23 +128,44 @@ namespace NetworkService.ViewModel
             get { return isLessThan; }
             set
             {
-                // Allow deselection - if clicking already selected, deselect it
-                if (value && isLessThan)
+                if (!isRestoringState)
                 {
-                    SetProperty(ref isLessThan, false);
-                    SetProperty(ref isGreaterThan, false);
-                    SetProperty(ref isEqualTo, false);
+                    // Save current state for undo
+                    var previousState = new FilterState
+                    {
+                        FilterType = selectedFilterType,
+                        IdValue = filterIdValue,
+                        LessThan = isLessThan,
+                        GreaterThan = isGreaterThan,
+                        EqualTo = isEqualTo
+                    };
+
+                    // Allow deselection - if clicking already selected, deselect it
+                    if (value && isLessThan)
+                    {
+                        SetProperty(ref isLessThan, false);
+                        SetProperty(ref isGreaterThan, false);
+                        SetProperty(ref isEqualTo, false);
+                    }
+                    else
+                    {
+                        SetProperty(ref isLessThan, value);
+                        if (value)
+                        {
+                            SetProperty(ref isGreaterThan, false);
+                            SetProperty(ref isEqualTo, false);
+                        }
+                    }
+                    ApplyFilter();
+
+                    // Add undo action
+                    var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+                    mainViewModel.AddUndoAction(undoAction);
                 }
                 else
                 {
                     SetProperty(ref isLessThan, value);
-                    if (value)
-                    {
-                        SetProperty(ref isGreaterThan, false);
-                        SetProperty(ref isEqualTo, false);
-                    }
                 }
-                ApplyFilter();
             }
         }
 
@@ -102,23 +174,44 @@ namespace NetworkService.ViewModel
             get { return isGreaterThan; }
             set
             {
-                // Allow deselection - if clicking already selected, deselect it
-                if (value && isGreaterThan)
+                if (!isRestoringState)
                 {
-                    SetProperty(ref isLessThan, false);
-                    SetProperty(ref isGreaterThan, false);
-                    SetProperty(ref isEqualTo, false);
+                    // Save current state for undo
+                    var previousState = new FilterState
+                    {
+                        FilterType = selectedFilterType,
+                        IdValue = filterIdValue,
+                        LessThan = isLessThan,
+                        GreaterThan = isGreaterThan,
+                        EqualTo = isEqualTo
+                    };
+
+                    // Allow deselection - if clicking already selected, deselect it
+                    if (value && isGreaterThan)
+                    {
+                        SetProperty(ref isLessThan, false);
+                        SetProperty(ref isGreaterThan, false);
+                        SetProperty(ref isEqualTo, false);
+                    }
+                    else
+                    {
+                        SetProperty(ref isGreaterThan, value);
+                        if (value)
+                        {
+                            SetProperty(ref isLessThan, false);
+                            SetProperty(ref isEqualTo, false);
+                        }
+                    }
+                    ApplyFilter();
+
+                    // Add undo action
+                    var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+                    mainViewModel.AddUndoAction(undoAction);
                 }
                 else
                 {
                     SetProperty(ref isGreaterThan, value);
-                    if (value)
-                    {
-                        SetProperty(ref isLessThan, false);
-                        SetProperty(ref isEqualTo, false);
-                    }
                 }
-                ApplyFilter();
             }
         }
 
@@ -127,23 +220,84 @@ namespace NetworkService.ViewModel
             get { return isEqualTo; }
             set
             {
-                // Allow deselection - if clicking already selected, deselect it
-                if (value && isEqualTo)
+                if (!isRestoringState)
                 {
-                    SetProperty(ref isLessThan, false);
-                    SetProperty(ref isGreaterThan, false);
-                    SetProperty(ref isEqualTo, false);
+                    // Save current state for undo
+                    var previousState = new FilterState
+                    {
+                        FilterType = selectedFilterType,
+                        IdValue = filterIdValue,
+                        LessThan = isLessThan,
+                        GreaterThan = isGreaterThan,
+                        EqualTo = isEqualTo
+                    };
+
+                    // Allow deselection - if clicking already selected, deselect it
+                    if (value && isEqualTo)
+                    {
+                        SetProperty(ref isLessThan, false);
+                        SetProperty(ref isGreaterThan, false);
+                        SetProperty(ref isEqualTo, false);
+                    }
+                    else
+                    {
+                        SetProperty(ref isEqualTo, value);
+                        if (value)
+                        {
+                            SetProperty(ref isLessThan, false);
+                            SetProperty(ref isGreaterThan, false);
+                        }
+                    }
+                    ApplyFilter();
+
+                    // Add undo action
+                    var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+                    mainViewModel.AddUndoAction(undoAction);
                 }
                 else
                 {
                     SetProperty(ref isEqualTo, value);
-                    if (value)
-                    {
-                        SetProperty(ref isLessThan, false);
-                        SetProperty(ref isGreaterThan, false);
-                    }
                 }
+            }
+        }
+
+        // Helper method to restore filter state
+        private void RestoreFilterState(FilterState state)
+        {
+            // Use flag to prevent creating new undo actions during restore
+            isRestoringState = true;
+
+            try
+            {
+                // Restore all filter values
+                selectedFilterType = state.FilterType;
+                OnPropertyChanged(nameof(SelectedFilterType));
+
+                // Clear the ID value field if no filter was applied
+                if (!state.LessThan && !state.GreaterThan && !state.EqualTo)
+                {
+                    filterIdValue = 0; // Clear the field
+                }
+                else
+                {
+                    filterIdValue = state.IdValue;
+                }
+                OnPropertyChanged(nameof(FilterIdValue));
+
+                isLessThan = state.LessThan;
+                OnPropertyChanged(nameof(IsLessThan));
+
+                isGreaterThan = state.GreaterThan;
+                OnPropertyChanged(nameof(IsGreaterThan));
+
+                isEqualTo = state.EqualTo;
+                OnPropertyChanged(nameof(IsEqualTo));
+
                 ApplyFilter();
+            }
+            finally
+            {
+                isRestoringState = false;
             }
         }
 
@@ -184,6 +338,7 @@ namespace NetworkService.ViewModel
         {
             AddServerCommand = new MyICommand(AddServer);
             DeleteServerCommand = new MyICommand(DeleteServer, CanDeleteServer);
+            ClearFiltersCommand = new MyICommand(ClearAllFilters);
             UndoCommand = mainViewModel.UndoCommand;
         }
 
@@ -238,8 +393,8 @@ namespace NetworkService.ViewModel
 
             mainViewModel.AddServer(server);
 
-            // Create undo action
-            var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
+            // CORRECT: Undo for add should remove
+            var undoAction = new MyICommand(() => mainViewModel.RemoveServer(server));
             mainViewModel.AddUndoAction(undoAction);
 
             // Clear form
@@ -258,7 +413,7 @@ namespace NetworkService.ViewModel
                     var server = SelectedServer;
                     mainViewModel.RemoveServer(server);
 
-                    // Create undo action
+                    // CORRECT: Undo for delete should add back
                     var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
                     mainViewModel.AddUndoAction(undoAction);
 
@@ -266,6 +421,32 @@ namespace NetworkService.ViewModel
                     ToastService.Info($"Server '{server.Name}' deleted");
                 }
             }
+        }
+
+        private void ClearAllFilters()
+        {
+            // Save current state for undo
+            var previousState = new FilterState
+            {
+                FilterType = selectedFilterType,
+                IdValue = filterIdValue,
+                LessThan = isLessThan,
+                GreaterThan = isGreaterThan,
+                EqualTo = isEqualTo
+            };
+
+            // Clear all filters
+            SetProperty(ref selectedFilterType, "All");
+            SetProperty(ref filterIdValue, 0);
+            SetProperty(ref isLessThan, false);
+            SetProperty(ref isGreaterThan, false);
+            SetProperty(ref isEqualTo, false);
+
+            ApplyFilter();
+
+            // Add undo action
+            var undoAction = new MyICommand(() => RestoreFilterState(previousState));
+            mainViewModel.AddUndoAction(undoAction);
         }
 
         private bool CanDeleteServer()

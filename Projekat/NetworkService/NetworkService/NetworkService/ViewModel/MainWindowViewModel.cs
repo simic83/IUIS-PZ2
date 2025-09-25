@@ -766,6 +766,7 @@ namespace NetworkService.ViewModel
 
         public void AddUndoAction(ICommand command)
         {
+            undoStack.Clear();
             undoStack.Push(command);
             ((MyICommand)UndoCommand).RaiseCanExecuteChanged();
         }
