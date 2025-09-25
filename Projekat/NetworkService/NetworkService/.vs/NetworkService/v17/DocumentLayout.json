@@ -7,7 +7,11 @@
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\confirmationdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\viewmodel\\displayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|c:\\users\\slavi\\onedrive\\desktop\\iuis-pz2\\projekat\\networkservice\\networkservice\\networkservice\\views\\confirmationdialog.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\views\\confirmationdialog.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\networkservice\\viewmodel\\displayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AE2C93C-D3CE-4614-9394-158338AD45C1}|NetworkService\\NetworkService.csproj|solutionrelative:networkservice\\viewmodel\\displayviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -38,11 +42,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConfirmationDialog.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\ConfirmationDialog.xaml.cs",
+              "RelativeDocumentMoniker": "NetworkService\\Views\\ConfirmationDialog.xaml.cs",
+              "ToolTip": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\ConfirmationDialog.xaml.cs",
+              "RelativeToolTip": "NetworkService\\Views\\ConfirmationDialog.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-25T19:13:33.26Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -58,7 +75,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "DisplayViewModel.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\DisplayViewModel.cs",
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\DisplayViewModel.cs",
@@ -66,12 +83,11 @@
               "RelativeToolTip": "NetworkService\\ViewModel\\DisplayViewModel.cs",
               "ViewState": "AgIAANICAAAAAAAAAAAqwPwCAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-25T18:43:02.588Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-25T18:43:02.588Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "EntitiesView.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\Views\\EntitiesView.xaml",
               "RelativeDocumentMoniker": "NetworkService\\Views\\EntitiesView.xaml",
@@ -82,7 +98,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "MainWindowViewModel.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\MainWindowViewModel.cs",
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\MainWindowViewModel.cs",
@@ -94,7 +110,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "App.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\App.xaml",
               "RelativeDocumentMoniker": "NetworkService\\App.xaml",
@@ -106,7 +122,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\MainWindow.xaml",
               "RelativeDocumentMoniker": "NetworkService\\MainWindow.xaml",
@@ -117,7 +133,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "EntitiesViewModel.cs",
               "DocumentMoniker": "C:\\Users\\slavi\\OneDrive\\Desktop\\IUIS-PZ2\\Projekat\\NetworkService\\NetworkService\\NetworkService\\ViewModel\\EntitiesViewModel.cs",
               "RelativeDocumentMoniker": "NetworkService\\ViewModel\\EntitiesViewModel.cs",
