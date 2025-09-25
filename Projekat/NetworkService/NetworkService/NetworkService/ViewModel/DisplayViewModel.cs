@@ -126,6 +126,19 @@ namespace NetworkService.ViewModel
         }
     }
 
+    // Helper classes for storing state
+    public class DisplayState
+    {
+        public Dictionary<int, int> SlotConfiguration { get; set; } // SlotIndex -> ServerId
+        public List<(int, int)> ConnectionConfiguration { get; set; } // Server1Id, Server2Id pairs
+
+        public DisplayState()
+        {
+            SlotConfiguration = new Dictionary<int, int>();
+            ConnectionConfiguration = new List<(int, int)>();
+        }
+    }
+
     public class DisplayViewModel : BindableBase
     {
         private MainWindowViewModel mainViewModel;
@@ -250,9 +263,9 @@ namespace NetworkService.ViewModel
 
         private void InitializeCommands()
         {
-            ClearSlotsCommand = new MyICommand(ClearSlots);
+            ClearSlotsCommand = new MyICommand(ClearSlotsWithUndo);
             ToggleConnectionModeCommand = new MyICommand(() => IsConnectionMode = !IsConnectionMode);
-            ClearConnectionsCommand = new MyICommand(ClearAllConnections);
+            ClearConnectionsCommand = new MyICommand(ClearConnectionsWithUndo);
         }
 
         private void RefreshGroupedServers()
@@ -364,7 +377,45 @@ namespace NetworkService.ViewModel
             SaveConfiguration();
         }
 
-        // Clear Slots Command implementation
+        // Clear Slots with Undo support
+        private void ClearSlotsWithUndo()
+        {
+            // Save current state before clearing
+            var previousState = SaveCurrentState();
+
+            // Check if there's actually something to clear
+            bool hasContent = DisplaySlots.Any(s => s.Server != null) || Connections.Any();
+
+            if (hasContent)
+            {
+                // Clear everything
+                ClearSlots();
+
+                // Create undo action to restore previous state
+                var undoAction = new MyICommand(() => RestoreState(previousState));
+                mainViewModel.AddUndoAction(undoAction);
+            }
+        }
+
+        // Clear Connections with Undo support
+        private void ClearConnectionsWithUndo()
+        {
+            // Save current state before clearing connections
+            var previousConnections = Connections.Select(c =>
+                (c.Server1Id, c.Server2Id)).ToList();
+
+            if (previousConnections.Any())
+            {
+                // Clear all connections
+                ClearAllConnections();
+
+                // Create undo action to restore connections
+                var undoAction = new MyICommand(() => RestoreConnections(previousConnections));
+                mainViewModel.AddUndoAction(undoAction);
+            }
+        }
+
+        // Original clear methods (now private, called by the new methods)
         private void ClearSlots()
         {
             foreach (var slot in DisplaySlots)
@@ -372,6 +423,101 @@ namespace NetworkService.ViewModel
                 slot.Server = null;
             }
             ClearAllConnections();
+            SaveConfiguration();
+        }
+
+        // Save current display state
+        private DisplayState SaveCurrentState()
+        {
+            var state = new DisplayState();
+
+            // Save slot configuration
+            for (int i = 0; i < DisplaySlots.Count; i++)
+            {
+                if (DisplaySlots[i].Server != null)
+                {
+                    state.SlotConfiguration[i] = DisplaySlots[i].Server.Id;
+                }
+            }
+
+            // Save connection configuration
+            foreach (var connection in Connections)
+            {
+                state.ConnectionConfiguration.Add((connection.Server1Id, connection.Server2Id));
+            }
+
+            return state;
+        }
+
+        // Restore display state
+        private void RestoreState(DisplayState state)
+        {
+            // Clear current state
+            foreach (var slot in DisplaySlots)
+            {
+                slot.Server = null;
+            }
+            Connections.Clear();
+
+            // Restore slot configuration
+            foreach (var kvp in state.SlotConfiguration)
+            {
+                var server = mainViewModel.Servers.FirstOrDefault(s => s.Id == kvp.Value);
+                if (server != null && kvp.Key < DisplaySlots.Count)
+                {
+                    DisplaySlots[kvp.Key].Server = server;
+                }
+            }
+
+            // Restore connections
+            foreach (var (server1Id, server2Id) in state.ConnectionConfiguration)
+            {
+                var slot1 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == server1Id);
+                var slot2 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == server2Id);
+
+                if (slot1 != null && slot2 != null)
+                {
+                    var connection = new ServerConnection
+                    {
+                        Server1Id = server1Id,
+                        Server2Id = server2Id,
+                        StartPoint = slot1.CenterPoint,
+                        EndPoint = slot2.CenterPoint,
+                        IsVisible = true
+                    };
+                    Connections.Add(connection);
+                }
+            }
+
+            UpdateConnectionPositions();
+            SaveConfiguration();
+        }
+
+        // Restore only connections
+        private void RestoreConnections(List<(int, int)> previousConnections)
+        {
+            Connections.Clear();
+
+            foreach (var (server1Id, server2Id) in previousConnections)
+            {
+                var slot1 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == server1Id);
+                var slot2 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == server2Id);
+
+                if (slot1 != null && slot2 != null)
+                {
+                    var connection = new ServerConnection
+                    {
+                        Server1Id = server1Id,
+                        Server2Id = server2Id,
+                        StartPoint = slot1.CenterPoint,
+                        EndPoint = slot2.CenterPoint,
+                        IsVisible = true
+                    };
+                    Connections.Add(connection);
+                }
+            }
+
+            UpdateConnectionPositions();
             SaveConfiguration();
         }
 
