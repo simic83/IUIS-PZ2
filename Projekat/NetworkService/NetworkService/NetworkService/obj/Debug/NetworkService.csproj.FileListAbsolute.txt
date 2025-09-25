@@ -26,6 +26,13 @@ C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkSe
 C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.cache
 C:\Users\slavi\OneDrive\Desktop\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.lref
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.exe.config
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.exe
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.pdb
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.Net.dll
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.dll
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.Net.xml
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.xml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService.csproj.AssemblyReference.cache
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\ConfirmationDialog.baml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\ToastWindow.baml
@@ -40,13 +47,6 @@ C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.cache
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\NetworkService_MarkupCompile.lref
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.exe.config
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.exe
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\NetworkService.pdb
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.Net.dll
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.dll
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.Net.xml
-C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\bin\Debug\FontAwesome5.xml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\MainWindow.baml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\DisplayView.baml
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\NetworkService\NetworkService\NetworkService\obj\Debug\Views\EntitiesView.baml

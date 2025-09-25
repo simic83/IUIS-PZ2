@@ -30,6 +30,8 @@ namespace NetworkService.ViewModel
         private string statusMessage;
         private Thread listeningThread;
         private bool isListening;
+        
+
 
         private readonly string measurementLogPath = "measurements.txt";
 
@@ -226,6 +228,13 @@ namespace NetworkService.ViewModel
         {
             if (string.IsNullOrWhiteSpace(command)) return;
 
+            // Handle Y/N confirmation first
+            if (awaitingConfirmation)
+            {
+                HandleConfirmation(command);
+                return;
+            }
+
             string[] parts = command.ToLower().Split(' ');
 
             switch (parts[0])
@@ -262,14 +271,19 @@ namespace NetworkService.ViewModel
                     break;
 
                 case "filter":
-                    if (parts.Length >= 3)
+                    if (parts.Length >= 2 && parts[1] == "reset")
+                    {
+                        ResetFilters();
+                    }
+                    else if (parts.Length >= 3)
+                    {
                         ApplyFilter(parts);
+                    }
                     else
+                    {
                         AddTerminalOutput("Usage: filter <type|id> <operator> <value>");
-                    break;
-
-                case "reset":
-                    ResetFilters();
+                        AddTerminalOutput("   or: filter reset");
+                    }
                     break;
 
                 // Navigation
@@ -295,15 +309,6 @@ namespace NetworkService.ViewModel
                         AddTerminalOutput("No actions to undo");
                     break;
 
-                case "confirm":
-                    ConfirmLastAction();
-                    break;
-
-                // System Commands
-                case "status":
-                    ShowStatus();
-                    break;
-
                 case "ping":
                     if (parts.Length > 1)
                         PingServer(parts[1]);
@@ -311,20 +316,8 @@ namespace NetworkService.ViewModel
                         AddTerminalOutput("Usage: ping <server_id>");
                     break;
 
-                case "refresh":
-                    RefreshData();
-                    break;
-
                 case "clear":
                     TerminalOutput.Clear();
-                    break;
-
-                case "export":
-                    ExportData();
-                    break;
-
-                case "stats":
-                    ShowStatistics();
                     break;
 
                 default:
@@ -334,16 +327,52 @@ namespace NetworkService.ViewModel
             }
         }
 
+
+        private void HandleConfirmation(string response)
+        {
+            string cleanResponse = response.Trim().ToUpper();
+
+            if (cleanResponse == "Y" || cleanResponse == "YES")
+            {
+                if (pendingRemovalServer != null)
+                {
+                    var server = pendingRemovalServer;
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        RemoveServer(server);
+                        AddTerminalOutput($"✓ Server '{server.Name}' (ID: {server.Id:000}) removed successfully");
+
+                        // Add to undo stack
+                        var undoAction = new MyICommand(() => AddServer(server));
+                        AddUndoAction(undoAction);
+                    });
+                }
+            }
+            else if (cleanResponse == "N" || cleanResponse == "NO")
+            {
+                AddTerminalOutput("Operation cancelled");
+            }
+            else
+            {
+                AddTerminalOutput("Please answer Y (yes) or N (no)");
+                return; // Don't reset confirmation state
+            }
+
+            // Reset confirmation state
+            pendingRemovalServer = null;
+            awaitingConfirmation = false;
+        }
+
         private void ShowHelp()
         {
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("╔════════════════════════════════════════════════════════╗");
             AddTerminalOutput("NetworkService Terminal - Available Commands");
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("╚════════════════════════════════════════════════════════╝");
             AddTerminalOutput("");
             AddTerminalOutput("ENTITY MANAGEMENT (T6 - Servers):");
             AddTerminalOutput("  add <id> <name> <type> <ip>  - Add new server");
             AddTerminalOutput("                                  Types: Web, Database, File");
-            AddTerminalOutput("  remove <id>                   - Remove server by ID");
+            AddTerminalOutput("  remove <id>                   - Remove server by ID (asks Y/N)");
             AddTerminalOutput("  list                          - List all servers");
             AddTerminalOutput("");
             AddTerminalOutput("SEARCH & FILTER:");
@@ -354,7 +383,7 @@ namespace NetworkService.ViewModel
             AddTerminalOutput("  filter id < <value>           - Filter ID less than");
             AddTerminalOutput("  filter id > <value>           - Filter ID greater than");
             AddTerminalOutput("  filter id = <value>           - Filter ID equal to");
-            AddTerminalOutput("  reset                         - Clear all filters");
+            AddTerminalOutput("  filter reset                  - Clear all filters");
             AddTerminalOutput("");
             AddTerminalOutput("NAVIGATION:");
             AddTerminalOutput("  navigate <1|2|3>              - Switch tabs");
@@ -363,12 +392,7 @@ namespace NetworkService.ViewModel
             AddTerminalOutput("");
             AddTerminalOutput("ACTIONS:");
             AddTerminalOutput("  undo                          - Undo last action");
-            AddTerminalOutput("  confirm                       - Confirm pending action");
             AddTerminalOutput("  ping <id>                     - Ping server");
-            AddTerminalOutput("  status                        - Show system status");
-            AddTerminalOutput("  stats                         - Show statistics");
-            AddTerminalOutput("  refresh                       - Refresh data");
-            AddTerminalOutput("  export                        - Export data to file");
             AddTerminalOutput("  clear                         - Clear terminal");
             AddTerminalOutput("  help                          - Show this help");
             AddTerminalOutput("");
@@ -376,7 +400,7 @@ namespace NetworkService.ViewModel
             AddTerminalOutput("  Ctrl+T                        - Focus terminal");
             AddTerminalOutput("  Ctrl+Tab                      - Next tab");
             AddTerminalOutput("  Arrow Up/Down                 - Navigate command history");
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
+            AddTerminalOutput("╚════════════════════════════════════════════════════════╝");
         }
 
         private void AddServerCommand(string[] parts)
@@ -461,10 +485,11 @@ namespace NetworkService.ViewModel
 
                 if (server != null)
                 {
-                    // Store for confirmation if needed
+                    // Store for confirmation
                     pendingRemovalServer = server;
-                    AddTerminalOutput($"⚠ Warning: About to remove server '{server.Name}' (ID: {id:000})");
-                    AddTerminalOutput("Type 'confirm' to proceed or any other command to cancel");
+                    awaitingConfirmation = true;
+
+                    AddTerminalOutput($"Are you sure you want to remove '{server.Name}' (ID: {id:000})? [Y/N]");
                 }
                 else
                 {
@@ -478,28 +503,7 @@ namespace NetworkService.ViewModel
         }
 
         private Server pendingRemovalServer = null;
-
-        private void ConfirmLastAction()
-        {
-            if (pendingRemovalServer != null)
-            {
-                var server = pendingRemovalServer;
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    RemoveServer(server);
-                    AddTerminalOutput($"✓ Server '{server.Name}' (ID: {server.Id:000}) removed successfully");
-
-                    // Add to undo stack
-                    var undoAction = new MyICommand(() => AddServer(server));
-                    AddUndoAction(undoAction);
-                });
-                pendingRemovalServer = null;
-            }
-            else
-            {
-                AddTerminalOutput("No pending action to confirm");
-            }
-        }
+        private bool awaitingConfirmation = false;
 
         private void SearchServers(string searchType, string searchValue)
         {
@@ -643,70 +647,6 @@ namespace NetworkService.ViewModel
             }
         }
 
-        private void ShowStatistics()
-        {
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
-            AddTerminalOutput("System Statistics");
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
-
-            int totalServers = Servers.Count;
-            int onlineCount = Servers.Count(s => s.Status == "online");
-            int warningCount = Servers.Count(s => s.Status == "warning");
-            int offlineCount = Servers.Count(s => s.Status == "offline");
-
-            var avgLoad = Servers.Where(s => s.LastMeasurement > 0).Average(s => s.LastMeasurement);
-            var maxLoad = Servers.Where(s => s.LastMeasurement > 0).Max(s => s.LastMeasurement);
-            var minLoad = Servers.Where(s => s.LastMeasurement > 0).Min(s => s.LastMeasurement);
-
-            AddTerminalOutput($"Total Servers:     {totalServers}");
-            AddTerminalOutput($"├─ Online:         {onlineCount} ({(totalServers > 0 ? onlineCount * 100 / totalServers : 0)}%)");
-            AddTerminalOutput($"├─ Warning:        {warningCount} ({(totalServers > 0 ? warningCount * 100 / totalServers : 0)}%)");
-            AddTerminalOutput($"└─ Offline:        {offlineCount} ({(totalServers > 0 ? offlineCount * 100 / totalServers : 0)}%)");
-            AddTerminalOutput("");
-            AddTerminalOutput("Load Statistics:");
-            AddTerminalOutput($"├─ Average Load:   {avgLoad:F1}%");
-            AddTerminalOutput($"├─ Maximum Load:   {maxLoad:F1}%");
-            AddTerminalOutput($"└─ Minimum Load:   {minLoad:F1}%");
-            AddTerminalOutput("");
-
-            // Server type distribution
-            var typeGroups = Servers.GroupBy(s => s.Type.Name);
-            AddTerminalOutput("Server Types:");
-            foreach (var group in typeGroups)
-            {
-                AddTerminalOutput($"├─ {group.Key}:        {group.Count()} servers");
-            }
-
-            AddTerminalOutput("");
-            AddTerminalOutput($"Undo Stack:        {undoStack.Count} action(s) available");
-            AddTerminalOutput($"Terminal History:  {CommandHistory.Count} command(s)");
-            AddTerminalOutput("═══════════════════════════════════════════════════════════");
-        }
-
-        private void ExportData()
-        {
-            try
-            {
-                string exportPath = "network_export_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
-                using (var writer = new System.IO.StreamWriter(exportPath))
-                {
-                    writer.WriteLine("ID,Name,Type,IP Address,Load (%),Status,Last Update");
-                    foreach (var server in Servers)
-                    {
-                        writer.WriteLine($"{server.Id},{server.Name},{server.Type.Name}," +
-                                       $"{server.IPAddress},{server.LastMeasurement:F0}," +
-                                       $"{server.Status},{server.LastUpdate:yyyy-MM-dd HH:mm:ss}");
-                    }
-                }
-                AddTerminalOutput($"✓ Data exported successfully to: {exportPath}");
-                AddTerminalOutput($"  Total servers exported: {Servers.Count}");
-            }
-            catch (Exception ex)
-            {
-                AddTerminalOutput($"Error exporting data: {ex.Message}");
-            }
-        }
-
         private bool IsValidIPAddress(string ip)
         {
             if (string.IsNullOrWhiteSpace(ip))
@@ -767,15 +707,6 @@ namespace NetworkService.ViewModel
             }
         }
 
-        private void ShowStatus()
-        {
-            int online = Servers.Count(s => s.Status == "online");
-            int warning = Servers.Count(s => s.Status == "warning");
-            int offline = Servers.Count(s => s.Status == "offline");
-
-            AddTerminalOutput($"Online: {online}, Warning: {warning}, Offline: {offline}");
-        }
-
         private void PingServer(string idStr)
         {
             if (int.TryParse(idStr, out int id))
@@ -794,12 +725,6 @@ namespace NetworkService.ViewModel
             {
                 AddTerminalOutput("Invalid server ID");
             }
-        }
-
-        private void RefreshData()
-        {
-            AddTerminalOutput("Refreshing server data...");
-            StatusMessage = "Data refreshed";
         }
 
         private void NavigateHistoryUp()
