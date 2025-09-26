@@ -38,7 +38,7 @@ namespace NetworkService.Converters
                 baseline = p;
             }
 
-            return Math.Max(0.0, baseline - height);
+            return Math.Max(0.0, baseline - height); // Logika
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

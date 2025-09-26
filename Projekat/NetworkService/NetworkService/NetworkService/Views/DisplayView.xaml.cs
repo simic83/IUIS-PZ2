@@ -22,7 +22,7 @@ namespace NetworkService.Views
             Loaded += OnLoaded;
             SizeChanged += OnSizeChanged;
 
-            // Setup timer for updating connection points
+            // Tajmer za osvežavanje poveznih linija, zbog promene pozicija
             updateTimer = new DispatcherTimer();
             updateTimer.Interval = TimeSpan.FromMilliseconds(100);
             updateTimer.Tick += UpdateTimer_Tick;
@@ -30,11 +30,11 @@ namespace NetworkService.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Delay to ensure layout is complete
+            // Mali delay za učitavanje
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 UpdateConnectionPoints();
-                // Make connections visible after positions are calculated
+                // Kada se učita, pusti vidljivost konekcija
                 if (viewModel != null)
                 {
                     viewModel.UpdateConnectionPositions();
@@ -44,7 +44,7 @@ namespace NetworkService.Views
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // Update connection points when window size changes
+            // U slučaju prozora
             if (!updateTimer.IsEnabled)
             {
                 updateTimer.Start();
@@ -57,20 +57,21 @@ namespace NetworkService.Views
             UpdateConnectionPoints();
         }
 
+        // Items panel
         private void UpdateConnectionPoints()
         {
             if (viewModel == null || SlotsItemsControl == null) return;
 
-            // Get the actual size of the grid
+            // Veličina grida
             var uniformGrid = GetVisualChild<UniformGrid>(SlotsItemsControl);
             if (uniformGrid == null || uniformGrid.ActualWidth == 0 || uniformGrid.ActualHeight == 0)
                 return;
 
-            // Calculate slot dimensions
+            // Dimenzije kartica
             double totalWidth = uniformGrid.ActualWidth;
             double totalHeight = uniformGrid.ActualHeight;
-            double slotWidth = totalWidth / 4; // 4 columns
-            double slotHeight = totalHeight / 3; // 3 rows
+            double slotWidth = totalWidth / 4; // 4 kolone
+            double slotHeight = totalHeight / 3; // 3 reda
 
             // Update all slot center points
             for (int i = 0; i < viewModel.DisplaySlots.Count; i++)
@@ -78,13 +79,13 @@ namespace NetworkService.Views
                 var container = SlotsItemsControl.ItemContainerGenerator.ContainerFromIndex(i) as ContentPresenter;
                 if (container != null)
                 {
-                    // Get the actual position relative to the ConnectionCanvas
+                    // Pozicije u odnosu na MainDisplayGrid
                     try
                     {
                         var transform = container.TransformToAncestor(MainDisplayGrid);
                         var topLeft = transform.Transform(new Point(0, 0));
 
-                        // Calculate center point
+                        // Center point
                         var centerX = topLeft.X + (container.ActualWidth / 2);
                         var centerY = topLeft.Y + (container.ActualHeight / 2);
 
@@ -92,7 +93,7 @@ namespace NetworkService.Views
                     }
                     catch
                     {
-                        // Fallback to calculated positions if transform fails
+                        // Drugi način
                         int row = i / 4;
                         int col = i % 4;
 
@@ -104,7 +105,7 @@ namespace NetworkService.Views
                 }
             }
 
-            // Update all connection positions
+            // Update pozicija
             viewModel?.UpdateConnectionPositions();
         }
 
@@ -133,11 +134,12 @@ namespace NetworkService.Views
             return child;
         }
 
+
+        // Početak
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (viewModel?.IsConnectionMode == true)
             {
-                // In connection mode, don't allow drag from tree
                 return;
             }
 
@@ -148,19 +150,20 @@ namespace NetworkService.Views
             if (server != null && viewModel != null)
             {
                 viewModel.DraggedServer = server;
-                viewModel.StartDragFromSlot(-1); // Dragging from tree
+                viewModel.StartDragFromSlot(-1); // Dragging iz drveta
 
-                // Change cursor to indicate dragging
+                // Promena kursora
                 Mouse.OverrideCursor = Cursors.Hand;
 
                 DragDrop.DoDragDrop(border, server, DragDropEffects.Move);
 
-                // Reset cursor
+                // Reset kursora posle drag i dropa
                 Mouse.OverrideCursor = null;
                 viewModel.EndDrag();
             }
         }
 
+        // Pomeraj
         private void Border_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && viewModel?.IsConnectionMode == false)
@@ -186,6 +189,7 @@ namespace NetworkService.Views
             }
         }
 
+        // Početak konekcije
         private void SlotBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var border = sender as Border;
@@ -195,14 +199,14 @@ namespace NetworkService.Views
 
                 if (viewModel.IsConnectionMode)
                 {
-                    // Handle connection mode
+                    // Connection mode
                     viewModel.HandleSlotClick(slotIndex);
-                    // Update connection points immediately after creating connection
+                    // Update odma posle konektovanja
                     UpdateConnectionPoints();
                 }
                 else
                 {
-                    // Handle drag mode
+                    // Drag mode
                     var server = viewModel.GetServerInSlot(slotIndex);
 
                     if (server != null)
@@ -227,7 +231,6 @@ namespace NetworkService.Views
         {
             if (viewModel?.IsConnectionMode == true)
             {
-                // In connection mode, right-click does nothing
                 return;
             }
 
@@ -239,14 +242,14 @@ namespace NetworkService.Views
 
                 if (server != null)
                 {
-                    // Simple right-click to remove from slot
+                    // Desni klik cisti slot
                     viewModel.RemoveServerFromSlot(slotIndex);
-                    // Update connections after removal
                     UpdateConnectionPoints();
                 }
             }
         }
 
+        // Prebacivanje
         private void Canvas_DragOver(object sender, DragEventArgs e)
         {
             if (viewModel?.IsConnectionMode == true)
@@ -260,7 +263,7 @@ namespace NetworkService.Views
             {
                 e.Effects = DragDropEffects.Move;
 
-                // Set drag over state for visual feedback
+                // Drag završen
                 var border = sender as Border;
                 if (border != null && viewModel != null)
                 {
@@ -275,6 +278,7 @@ namespace NetworkService.Views
             e.Handled = true;
         }
 
+        // Van bordera
         private void Canvas_DragLeave(object sender, DragEventArgs e)
         {
             var border = sender as Border;
@@ -285,6 +289,7 @@ namespace NetworkService.Views
             }
         }
 
+        // Uspešan drop
         private void Canvas_Drop(object sender, DragEventArgs e)
         {
             if (viewModel?.IsConnectionMode == true)
@@ -314,8 +319,6 @@ namespace NetworkService.Views
                             // SWAP: prebaci ono što je bilo na ciljnom u izvorni slot
                             viewModel.PlaceServerInSlot(existingServer, viewModel.DraggedFromSlot);
                         }
-                        // VAŽNO: više NE čistimo stari slot pozivom RemoveServerFromSlot
-                        // PlaceServerInSlot će sam skinuti "server" sa starog slota bez brisanja konekcija.
                     }
 
 

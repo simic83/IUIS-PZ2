@@ -148,7 +148,7 @@ namespace NetworkService.ViewModel
             // Usklađeno sa XAML koordinatama:
             // X-osa je na Y=340, gornja referenca Y=20, dakle max visina = 340 - 20 = 320
             double barWidth = 80;
-            double spacing = 60;   // možeš 60–100 po ukusu
+            double spacing = 60;   // prostor između stubića
             double startX = 90;    // da stane lepo između X1=50 i X2=750
             double maxHeight = 320;
 

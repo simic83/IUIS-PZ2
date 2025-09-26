@@ -488,7 +488,8 @@
                           HeadersVisibility="Column"
                           RowStyle="{StaticResource GridRowStyle}"
                           CellStyle="{StaticResource GridCellStyle}"
-                          RowHeaderWidth="0">
+                          RowHeaderWidth="0"
+                          IsReadOnly="True" >
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#333"/>

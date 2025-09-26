@@ -18,7 +18,6 @@ namespace NetworkService
             Loaded += (s, e) => FocusTerminalInput();
         }
 
-        // Public method to focus the terminal input from ViewModel
         public void FocusTerminalInput()
         {
             if (TerminalInput != null)

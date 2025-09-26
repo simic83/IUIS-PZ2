@@ -61,7 +61,7 @@ namespace NetworkService.ViewModel
             get { return server; }
             set
             {
-                // Unsubscribe from old server
+                // Zaboravi na stari
                 if (server != null)
                 {
                     server.PropertyChanged -= OnServerPropertyChanged;
@@ -69,7 +69,7 @@ namespace NetworkService.ViewModel
 
                 SetProperty(ref server, value);
 
-                // Subscribe to new server
+                // Subscribe na novi
                 if (server != null)
                 {
                     server.PropertyChanged += OnServerPropertyChanged;
@@ -95,13 +95,13 @@ namespace NetworkService.ViewModel
             set => SetProperty(ref centerPoint, value);
         }
 
-        // Method to calculate center based on grid position
+        // Method za računanje centra
         public void UpdateCenterPoint(double slotWidth, double slotHeight, double gridMargin = 10)
         {
             int row = SlotIndex / 4;
             int col = SlotIndex % 4;
 
-            // Calculate center point including margins
+            // offset za margine
             double x = gridMargin + (col * slotWidth) + (slotWidth / 2);
             double y = gridMargin + (row * slotHeight) + (slotHeight / 2);
 
@@ -110,7 +110,7 @@ namespace NetworkService.ViewModel
 
         private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Force UI update when server properties change
+            // Force UI update kada se server updateuje
             OnPropertyChanged(nameof(Server));
         }
     }
@@ -126,11 +126,11 @@ namespace NetworkService.ViewModel
         }
     }
 
-    // Helper classes for storing state
+    // Helper classe
     public class DisplayState
     {
         public Dictionary<int, int> SlotConfiguration { get; set; } // SlotIndex -> ServerId
-        public List<(int, int)> ConnectionConfiguration { get; set; } // Server1Id, Server2Id pairs
+        public List<(int, int)> ConnectionConfiguration { get; set; } // Server1Id, Server2Id parovi
 
         public DisplayState()
         {
@@ -139,14 +139,14 @@ namespace NetworkService.ViewModel
         }
     }
 
-    // Class for storing drag & drop undo information
+    // Classa za čuvanje dnd undo informacija
     public class DragDropUndoInfo
     {
         public int ServerId { get; set; }
-        public int? FromSlotIndex { get; set; } // null if from tree
-        public int? ToSlotIndex { get; set; }   // null if removed to tree
-        public int? SwappedServerId { get; set; } // if a swap occurred
-        public int? SwappedFromSlot { get; set; } // original slot of swapped server
+        public int? FromSlotIndex { get; set; } // null iz tree
+        public int? ToSlotIndex { get; set; }   // null ako vraceno u tree
+        public int? SwappedServerId { get; set; } // ako je bio swap
+        public int? SwappedFromSlot { get; set; } // početni slot swap servera
     }
 
     public class DisplayViewModel : BindableBase
@@ -161,7 +161,7 @@ namespace NetworkService.ViewModel
         private Server connectionStartServer;
         private int connectionStartSlot = -1;
 
-        // Persistence storage
+        // Memorisanje
         private static Dictionary<int, int> slotConfiguration = new Dictionary<int, int>(); // SlotIndex -> ServerId
         private static List<(int, int)> connectionConfiguration = new List<(int, int)>(); // Server1Id, Server2Id pairs
 
@@ -230,11 +230,11 @@ namespace NetworkService.ViewModel
             RefreshGroupedServers();
             RestoreConfiguration();
 
-            // Subscribe to collection changes
+            // Subscribe na promene u server kolekciji
             mainViewModel.Servers.CollectionChanged += (s, e) =>
             {
                 RefreshGroupedServers();
-                // Remove deleted servers from slots
+                // Skloni izbrisane servere sa slotova
                 if (e.OldItems != null)
                 {
                     foreach (Server server in e.OldItems)
@@ -243,7 +243,7 @@ namespace NetworkService.ViewModel
                         RemoveConnectionsForServer(server.Id);
                     }
                 }
-                // Restore configuration for new servers if they were previously placed
+                // Restore configuration za nove servere ako su prethodno postavljeni
                 if (e.NewItems != null)
                 {
                     RestoreConfiguration();
@@ -261,7 +261,6 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // Public method to update center points from actual UI measurements
         public void UpdateSlotCenterPoints(double slotWidth, double slotHeight, double gridMargin = 10)
         {
             foreach (var slot in DisplaySlots)
@@ -291,7 +290,7 @@ namespace NetworkService.ViewModel
             GroupedServers = new ObservableCollection<ServerGroup>(groups);
         }
 
-        // Method to track where the drag started from
+        // Method za praćenje drag početka
         public void StartDragFromSlot(int slotIndex)
         {
             DraggedFromSlot = slotIndex;
@@ -302,7 +301,7 @@ namespace NetworkService.ViewModel
         {
             IsDragging = false;
             DraggedFromSlot = -1;
-            // Clear all drag over states
+            // Čišćenje svih drag over-a
             foreach (var slot in DisplaySlots)
             {
                 slot.IsDragOver = false;
@@ -317,7 +316,7 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // Method to get server in a specific slot
+        // Method za postavljanje servera u poseban slot
         public Server GetServerInSlot(int slotIndex)
         {
             if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
@@ -327,7 +326,7 @@ namespace NetworkService.ViewModel
             return null;
         }
 
-        // Method to remove server from a specific slot (with undo support)
+        // Method za sklanjanje servera
         public void RemoveServerFromSlot(int slotIndex)
         {
             if (slotIndex >= 0 && slotIndex < DisplaySlots.Count)
@@ -335,26 +334,24 @@ namespace NetworkService.ViewModel
                 var server = DisplaySlots[slotIndex].Server;
                 if (server != null)
                 {
-                    // Create undo info for removal
                     var undoInfo = new DragDropUndoInfo
                     {
                         ServerId = server.Id,
                         FromSlotIndex = slotIndex,
-                        ToSlotIndex = null // removed to tree
+                        ToSlotIndex = null // vrati u drvo
                     };
 
                     DisplaySlots[slotIndex].Server = null;
                     RemoveConnectionsForServer(server.Id);
                     SaveConfiguration();
 
-                    // Add undo action
                     var undoAction = new MyICommand(() => RestoreDragDrop(undoInfo));
                     mainViewModel.AddUndoAction(undoAction);
                 }
             }
         }
 
-        // Helper method to remove a server from all slots (prevents duplicates)
+        // Popravka duplikata
         private void RemoveServerFromAllSlots(Server server)
         {
             foreach (var slot in DisplaySlots)
@@ -472,45 +469,38 @@ namespace NetworkService.ViewModel
             SaveConfiguration();
         }
 
-        // Clear Slots with Undo support
+        // Očisti slotove
         private void ClearSlotsWithUndo()
         {
-            // Save current state before clearing
             var previousState = SaveCurrentState();
 
-            // Check if there's actually something to clear
+            // Mala provera da li uopšte ima nešto
             bool hasContent = DisplaySlots.Any(s => s.Server != null) || Connections.Any();
 
             if (hasContent)
             {
-                // Clear everything
                 ClearSlots();
 
-                // Create undo action to restore previous state
                 var undoAction = new MyICommand(() => RestoreState(previousState));
                 mainViewModel.AddUndoAction(undoAction);
             }
         }
 
-        // Clear Connections with Undo support
+        // Clear Connections i Undo
         private void ClearConnectionsWithUndo()
         {
-            // Save current state before clearing connections
             var previousConnections = Connections.Select(c =>
                 (c.Server1Id, c.Server2Id)).ToList();
 
             if (previousConnections.Any())
             {
-                // Clear all connections
                 ClearAllConnections();
 
-                // Create undo action to restore connections
                 var undoAction = new MyICommand(() => RestoreConnections(previousConnections));
                 mainViewModel.AddUndoAction(undoAction);
             }
         }
 
-        // Original clear methods (now private, called by the new methods)
         private void ClearSlots()
         {
             foreach (var slot in DisplaySlots)
@@ -521,12 +511,12 @@ namespace NetworkService.ViewModel
             SaveConfiguration();
         }
 
-        // Save current display state
+        // Display
         private DisplayState SaveCurrentState()
         {
             var state = new DisplayState();
 
-            // Save slot configuration
+            // Čuvaj slotove
             for (int i = 0; i < DisplaySlots.Count; i++)
             {
                 if (DisplaySlots[i].Server != null)
@@ -535,7 +525,7 @@ namespace NetworkService.ViewModel
                 }
             }
 
-            // Save connection configuration
+            // Čuvaj konekciju
             foreach (var connection in Connections)
             {
                 state.ConnectionConfiguration.Add((connection.Server1Id, connection.Server2Id));
@@ -544,17 +534,17 @@ namespace NetworkService.ViewModel
             return state;
         }
 
-        // Restore display state
+        // Vrati display stanje
         private void RestoreState(DisplayState state)
         {
-            // Clear current state
+            // Čišćenje trenutnog stanja
             foreach (var slot in DisplaySlots)
             {
                 slot.Server = null;
             }
             Connections.Clear();
 
-            // Restore slot configuration
+            // Vrati stanje slotova
             foreach (var kvp in state.SlotConfiguration)
             {
                 var server = mainViewModel.Servers.FirstOrDefault(s => s.Id == kvp.Value);
@@ -564,7 +554,7 @@ namespace NetworkService.ViewModel
                 }
             }
 
-            // Restore connections
+            // Vrati konekcije
             foreach (var (server1Id, server2Id) in state.ConnectionConfiguration)
             {
                 var slot1 = DisplaySlots.FirstOrDefault(s => s.Server?.Id == server1Id);
@@ -588,7 +578,7 @@ namespace NetworkService.ViewModel
             SaveConfiguration();
         }
 
-        // Restore only connections
+        // Vrati konekcije
         private void RestoreConnections(List<(int, int)> previousConnections)
         {
             Connections.Clear();
@@ -616,7 +606,7 @@ namespace NetworkService.ViewModel
             SaveConfiguration();
         }
 
-        // Connection management
+        // Početak konekcije
         public void HandleSlotClick(int slotIndex)
         {
             if (!IsConnectionMode) return;
@@ -626,13 +616,11 @@ namespace NetworkService.ViewModel
 
             if (connectionStartServer == null)
             {
-                // Start a new connection
                 connectionStartServer = server;
                 connectionStartSlot = slotIndex;
             }
             else
             {
-                // Complete the connection
                 if (server != connectionStartServer && !ConnectionExists(connectionStartServer.Id, server.Id))
                 {
                     CreateConnection(connectionStartServer.Id, server.Id, connectionStartSlot, slotIndex);
@@ -694,8 +682,7 @@ namespace NetworkService.ViewModel
                 }
                 else
                 {
-                    // Don't immediately hide - this could be a temporary state during drag/drop
-                    // Only hide if the servers are actually removed from the collection
+                    // Ne sakriva konekciju odma
                     var server1Exists = DisplaySlots.Any(s => s.Server?.Id == connection.Server1Id);
                     var server2Exists = DisplaySlots.Any(s => s.Server?.Id == connection.Server2Id);
 
@@ -707,10 +694,10 @@ namespace NetworkService.ViewModel
             }
         }
 
-        // Persistence methods
+        // Čuvanje
         private void SaveConfiguration()
         {
-            // Save slot configuration
+            // Slotovi
             slotConfiguration.Clear();
             for (int i = 0; i < DisplaySlots.Count; i++)
             {
@@ -720,7 +707,7 @@ namespace NetworkService.ViewModel
                 }
             }
 
-            // Save connection configuration
+            // Konekcije
             connectionConfiguration.Clear();
             foreach (var connection in Connections)
             {
@@ -740,7 +727,7 @@ namespace NetworkService.ViewModel
                 }
             }
 
-            // Restore connections - but don't set positions yet, wait for UI to calculate
+            // Restore connections - ali prvo sačekaj na račun UI
             Connections.Clear();
             foreach (var (server1Id, server2Id) in connectionConfiguration)
             {
@@ -755,7 +742,7 @@ namespace NetworkService.ViewModel
                         Server2Id = server2Id,
                         StartPoint = slot1.CenterPoint,
                         EndPoint = slot2.CenterPoint,
-                        IsVisible = false // Start invisible until positions are calculated
+                        IsVisible = false // Prvo su ne vidljive
                     };
                     Connections.Add(connection);
                 }

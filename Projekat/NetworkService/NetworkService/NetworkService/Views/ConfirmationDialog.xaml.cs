@@ -23,7 +23,7 @@ namespace NetworkService.Views
             MessageText.Text = message;
             TitleText.Text = title;
 
-            // Customize based on type
+            // Tipovi
             switch (type)
             {
                 case DialogType.Delete:
@@ -49,17 +49,17 @@ namespace NetworkService.Views
             }
         }
 
-        // Constructor for deleting a server with details
+        // Konstruktor za brisanje servera sa detaljima
         public ConfirmationDialog(Server server) : this($"Are you sure you want to delete server '{server.Name}'?", "Confirm Delete Server", DialogType.Delete)
         {
-            // Show server details
+            // Detalji brisanja
             DetailsSection.Visibility = Visibility.Visible;
             ServerIdText.Text = server.Id.ToString("000");
             ServerNameText.Text = server.Name;
             ServerTypeText.Text = server.Type?.Name ?? "Unknown";
             ServerIpText.Text = server.IPAddress;
 
-            // Add status color to name if needed
+            // Status boja
             if (server.Status == "online")
             {
                 ServerNameText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0f0"));
@@ -103,7 +103,7 @@ namespace NetworkService.Views
             Close();
         }
 
-        // Static helper methods for easy usage
+        // Helperi
         public static bool ShowDeleteConfirmation(Server server, Window owner = null)
         {
             var dialog = new ConfirmationDialog(server);

@@ -1,10 +1,9 @@
-﻿// Path: Services/ToastService.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
-using NetworkService.Views; // ← obavezno: namespace gde je ToastWindow.xaml/.cs
+using NetworkService.Views;
 
 namespace NetworkService.Services
 {
@@ -12,13 +11,13 @@ namespace NetworkService.Services
 
     public static class ToastService
     {
-        // Aktivni toasti (da ih pravilno rasporedimo)
+        // Aktivni toasti
         private static readonly List<ToastWindow> _active = new List<ToastWindow>();
 
         // Razmaci i pozicioniranje unutar MainWindow-a
         private const int VerticalGap = 8;   // razmak između toastova
-        private const int RightOffset = 20;  // odmak od desne ivice MainWindow-a
-        private const int TopOffset = 72;    // odmak od gornje ivice (ispod Undo/History)
+        private const int RightOffset = 20;  
+        private const int TopOffset = 72;    
 
         // Podrazumevano trajanje: 2.5s
         public static void Success(string message, int ms = 2500) => Show(message, ToastType.Success, ms);
@@ -75,7 +74,7 @@ namespace NetworkService.Services
 
             // Unutar glavnog prozora:
             double rightInside = main.Left + main.Width - RightOffset; // desna ivica MainWindow-a (sa odmakom)
-            double currentTopInside = main.Top + TopOffset;            // početni Y (ispod Undo/History)
+            double currentTopInside = main.Top + TopOffset;            // početni Y
 
             // Najnoviji ide gore (da se odmah vidi), stariji ispod njega
             foreach (var t in _active.OrderByDescending(w => w.CreatedAtTicks))

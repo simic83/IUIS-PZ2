@@ -67,7 +67,6 @@
     <Compile Include="Model\Server.cs" />
     <Compile Include="Model\ServerType.cs" />
     <Compile Include="Services\ToastService.cs" />
-    <Compile Include="ViewModel\Commands\MyICommand%28T%29.cs" />
     <Compile Include="ViewModel\Commands\MyICommand.cs" />
     <Compile Include="ViewModel\DisplayViewModel.cs" />
     <Compile Include="ViewModel\EntitiesViewModel.cs" />

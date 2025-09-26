@@ -23,7 +23,7 @@ namespace NetworkService.ViewModel
         private ObservableCollection<ServerType> serverTypes;
         private ICollectionView filteredServers;
 
-        // Filter state
+        // Stanje filtera
         private string selectedFilterType = "All";
         private int filterIdValue;
         private bool isLessThan, isGreaterThan, isEqualTo;
@@ -56,8 +56,6 @@ namespace NetworkService.ViewModel
         }
 
         public ObservableCollection<string> FilterTypes { get; set; }
-
-        // === Simplified properties ===
 
         public string SelectedFilterType
         {
@@ -331,7 +329,7 @@ namespace NetworkService.ViewModel
 
             mainViewModel.AddServer(server);
 
-            // Jednostavan single-undo: dodavanje -> undo uklanja
+            // Cuvanje za undo
             var undoAction = new MyICommand(() => mainViewModel.RemoveServer(server));
             mainViewModel.AddUndoAction(undoAction);
 
@@ -350,7 +348,7 @@ namespace NetworkService.ViewModel
                     var server = SelectedServer;
                     mainViewModel.RemoveServer(server);
 
-                    // Jednostavan single-undo: brisanje -> undo vraća
+                    // Undo poslednja akcija
                     var undoAction = new MyICommand(() => mainViewModel.AddServer(server));
                     mainViewModel.AddUndoAction(undoAction);
 
@@ -364,12 +362,6 @@ namespace NetworkService.ViewModel
             return SelectedServer != null;
         }
 
-        private bool CanDeleteSelectedServers()
-        {
-            return mainViewModel.Servers.Any(s => s.IsSelected);
-        }
-
-        // === Validacija IP-a ===
         private bool IsValidIPAddress(string ip)
         {
             if (string.IsNullOrWhiteSpace(ip))
@@ -389,7 +381,6 @@ namespace NetworkService.ViewModel
 
         protected override void ValidateSelf()
         {
-            // Clear previous
             ValidationErrors.Clear();
 
             if (NewServer.Id <= 0)

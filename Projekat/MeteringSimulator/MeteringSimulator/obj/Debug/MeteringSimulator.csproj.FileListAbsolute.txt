@@ -46,3 +46,4 @@ C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\MeteringSimulator\MeteringSimu
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\MeteringSimulator\MeteringSimulator\obj\Debug\MeteringSimulator.csproj.CoreCompileInputs.cache
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\MeteringSimulator\MeteringSimulator\obj\Debug\MeteringSimulator.exe
 C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\MeteringSimulator\MeteringSimulator\obj\Debug\MeteringSimulator.pdb
+C:\Users\slavi\OneDrive\Desktop\IUIS-PZ2\Projekat\MeteringSimulator\MeteringSimulator\obj\Debug\MeteringSimulator.exe.config

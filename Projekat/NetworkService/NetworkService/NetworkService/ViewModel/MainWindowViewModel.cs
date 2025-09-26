@@ -104,8 +104,50 @@ namespace NetworkService.ViewModel
             TerminalOutput = new ObservableCollection<string>();
             CommandHistory = new ObservableCollection<string>();
 
-            // Don't add initial mock servers - wait for MeteringStation data
-            // The application should start with empty server list
+            // Mock data
+            var webServerType = new ServerType("Web", "/Resources/Images/web_server.png");
+            var dbServerType = new ServerType("Database", "/Resources/Images/database_server.png");
+            var fileServerType = new ServerType("File", "/Resources/Images/file_server.png");
+
+            // Server 1 - Web Server
+            var server1 = new Server
+            {
+                Id = 1,
+                Name = "Production Web Server",
+                IPAddress = "192.168.1.10",
+                Type = webServerType,
+                LastMeasurement = 65.5, // Valid  (45-75)
+                LastUpdate = DateTime.Now,
+                Status = "online"
+            };
+
+            // Server 2 - Database Server
+            var server2 = new Server
+            {
+                Id = 2,
+                Name = "Primary Database",
+                IPAddress = "192.168.1.20",
+                Type = dbServerType,
+                LastMeasurement = 82.3, // Warning -  75
+                LastUpdate = DateTime.Now.AddMinutes(-5),
+                Status = "warning"
+            };
+
+            // Server 3 - File Server
+            var server3 = new Server
+            {
+                Id = 3,
+                Name = "Backup File Storage",
+                IPAddress = "192.168.1.30",
+                Type = fileServerType,
+                LastMeasurement = 48.7, // Valid 
+                LastUpdate = DateTime.Now.AddMinutes(-2),
+                Status = "online"
+            };
+
+            Servers.Add(server1);
+            Servers.Add(server2);
+            Servers.Add(server3);
         }
 
         private void InitializeCommands()
@@ -167,7 +209,7 @@ namespace NetworkService.ViewModel
             string viewName = viewModel.GetType().Name.Replace("ViewModel", "");
             AddTerminalOutput($"→ Switched to {viewName} view");
 
-            // Clear pending actions when switching views
+            // Za svaki slucaj
             pendingRemovalServer = null;
         }
 
@@ -189,17 +231,17 @@ namespace NetworkService.ViewModel
 
         private void FocusTerminal()
         {
-            // This will be called from the code-behind to actually focus the terminal
+            // Pozovi fokusiranje
             App.Current.Dispatcher.Invoke(() =>
             {
                 var mainWindow = App.Current.MainWindow as MainWindow;
                 mainWindow?.FocusTerminalInput();
             });
 
-            // Visual feedback that terminal is focused
+            // Tekst feedback
             if (!string.IsNullOrWhiteSpace(CurrentCommand))
             {
-                // If there's text in the terminal, keep it
+                // Ako postoji neki tekst..
                 AddTerminalOutput("Terminal focused - continue typing...");
             }
             else
@@ -227,7 +269,7 @@ namespace NetworkService.ViewModel
         {
             if (string.IsNullOrWhiteSpace(command)) return;
 
-            // Handle Y/N confirmation first
+            // Logika za Y/N
             if (awaitingConfirmation)
             {
                 HandleConfirmation(command);
@@ -261,7 +303,7 @@ namespace NetworkService.ViewModel
                     ListServers();
                     break;
 
-                // Search and Filter (P2)
+                // Search i Filter (P2)
                 case "search":
                     if (parts.Length >= 3)
                         SearchServers(parts[1], string.Join(" ", parts.Skip(2)));
@@ -354,10 +396,10 @@ namespace NetworkService.ViewModel
             else
             {
                 AddTerminalOutput("Please answer Y (yes) or N (no)");
-                return; // Don't reset confirmation state
+                return;
             }
 
-            // Reset confirmation state
+            // Reset 
             pendingRemovalServer = null;
             awaitingConfirmation = false;
         }
@@ -411,14 +453,14 @@ namespace NetworkService.ViewModel
                 string typeStr = parts[3];
                 string ip = parts[4];
 
-                // Check if ID already exists
+                // Provera da li postoji
                 if (Servers.Any(s => s.Id == id))
                 {
                     AddTerminalOutput($"Error: Server with ID {id} already exists");
                     return;
                 }
 
-                // Validate server type
+                // Validacija tipa i slike
                 ServerType type = null;
                 switch (typeStr.ToLower())
                 {
@@ -438,7 +480,7 @@ namespace NetworkService.ViewModel
                         return;
                 }
 
-                // Validate IP address format
+                // Validacija IP
                 if (!IsValidIPAddress(ip))
                 {
                     AddTerminalOutput($"Error: Invalid IP address format '{ip}'");
@@ -460,7 +502,7 @@ namespace NetworkService.ViewModel
                     AddServer(server);
                     AddTerminalOutput($"✓ Server added: {name} (ID: {id:000}, Type: {type.Name}, IP: {ip})");
 
-                    // Add to undo stack
+                    // 
                     var undoAction = new MyICommand(() => RemoveServer(server));
                     AddUndoAction(undoAction);
                 });
@@ -484,7 +526,7 @@ namespace NetworkService.ViewModel
 
                 if (server != null)
                 {
-                    // Store for confirmation
+                    // Podaci za confirm
                     pendingRemovalServer = server;
                     awaitingConfirmation = true;
 
@@ -765,7 +807,7 @@ namespace NetworkService.ViewModel
 
         public void AddUndoAction(ICommand command)
         {
-            lastUndoAction = command;  // Simply replace the last action
+            lastUndoAction = command;
             ((MyICommand)UndoCommand).RaiseCanExecuteChanged();
         }
 
@@ -774,7 +816,7 @@ namespace NetworkService.ViewModel
             if (lastUndoAction != null)
             {
                 var action = lastUndoAction;
-                lastUndoAction = null;  // Clear after use
+                lastUndoAction = null;  // Ocisti, samo poslednja akcija
 
                 action.Execute(null);
                 AddTerminalOutput("Undo executed");
@@ -788,7 +830,7 @@ namespace NetworkService.ViewModel
             string timestamp = DateTime.Now.ToString("HH:mm:ss");
             TerminalOutput.Add($"[{timestamp}] {message}");
 
-            // Keep terminal output limited
+            // Limit terminala
             while (TerminalOutput.Count > 100)
             {
                 TerminalOutput.RemoveAt(0);
@@ -854,7 +896,7 @@ namespace NetworkService.ViewModel
 
         private void ProcessMeasurement(string data)
         {
-            // Format: "Entitet_X:Value" where X is 0-based index
+            // Format: "Entitet_X:Value"
             string[] parts = data.Split(':');
             if (parts.Length == 2)
             {
@@ -864,14 +906,14 @@ namespace NetworkService.ViewModel
                     string[] entityParts = entityPart.Split('_');
                     if (entityParts.Length == 2 && int.TryParse(entityParts[1], out int index))
                     {
-                        // MeteringStation sends 0-based index
-                        // We need to create or update servers based on this index
-                        int serverId = index + 1; // Convert to 1-based ID
+                        // MeteringStation salje 0-based index
+                        // Update mojih server u odnosu na ovo
+                        int serverId = index + 1; // Pretvaranje 1-based ID
 
                         var server = Servers.FirstOrDefault(s => s.Id == serverId);
                         if (server == null)
                         {
-                            // Create new server if it doesn't exist
+                            // Ako ne postoji, napravi novi
                             string serverType = DetermineServerType(serverId);
                             server = new Server
                             {
@@ -891,7 +933,7 @@ namespace NetworkService.ViewModel
                         }
                         else
                         {
-                            // Update existing server
+                            // Update postojeceg
                             App.Current.Dispatcher.Invoke(() => {
                                 server.LastMeasurement = value;
                                 server.LastUpdate = DateTime.Now;
@@ -901,7 +943,7 @@ namespace NetworkService.ViewModel
 
                         LogToFile($"Measurement received - Server: {serverId}, Value: {value:F0}%, Time: {DateTime.Now}");
 
-                        // Update graph data if needed
+                        // Update grafa
                         if (graphViewModel != null)
                         {
                             App.Current.Dispatcher.Invoke(() => {
@@ -915,10 +957,10 @@ namespace NetworkService.ViewModel
 
         private string DetermineServerType(int serverId)
         {
-            // Assign server types based on ID patterns for T6 (Servers)
-            // Web servers: IDs ending in 1, 4, 7
-            // Database servers: IDs ending in 2, 5, 8
-            // File servers: IDs ending in 3, 6, 9, 0
+            // Dodeli tip na osnovu T6
+            // Web serveri: ID-jevi 1, 4, 7
+            // Database serveri: ID-jevi 2, 5, 8
+            // File serveri: ID-jevi 3, 6, 9, 0
 
             int mod = serverId % 10;
             switch (mod)
@@ -937,7 +979,7 @@ namespace NetworkService.ViewModel
                 case 0:
                     return "File";
                 default:
-                    return "Web"; // Default to Web
+                    return "Web"; // Default Web
             }
         }
 
@@ -951,7 +993,8 @@ namespace NetworkService.ViewModel
                     File.AppendAllText(measurementLogPath, header + Environment.NewLine);
                 }
 
-                string ts = DateTime.Now.ToString("HH:mm:ss"); // format kao u mini terminalu
+                // format kao u mini terminalu
+                string ts = DateTime.Now.ToString("HH:mm:ss"); 
                 string name = string.IsNullOrWhiteSpace(s.Name) ? $"Server {s.Id:000}" : s.Name;
 
                 string line =

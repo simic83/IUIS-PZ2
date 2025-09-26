@@ -201,3 +201,17 @@
 [2025-09-25 20:57:26] Measurement received - Server: 1, Value: 40%, Time: 25.9.2025. 20:57:26
 [2025-09-25 20:57:32] Measurement received - Server: 1, Value: 55%, Time: 25.9.2025. 20:57:32
 [2025-09-25 20:57:36] Measurement received - Server: 1, Value: 62%, Time: 25.9.2025. 20:57:36
+[2025-09-26 07:48:45] Server added: a (ID: 4)
+[2025-09-26 13:12:18] Measurement received - Server: 1, Value: 36%, Time: 26.9.2025. 13:12:18
+[2025-09-26 13:12:22] Measurement received - Server: 3, Value: 96%, Time: 26.9.2025. 13:12:22
+[2025-09-26 13:12:29] Measurement received - Server: 3, Value: 24%, Time: 26.9.2025. 13:12:29
+[2025-09-26 13:12:32] Measurement received - Server: 2, Value: 1%, Time: 26.9.2025. 13:12:32
+[2025-09-26 13:12:38] Measurement received - Server: 2, Value: 36%, Time: 26.9.2025. 13:12:38
+[2025-09-26 13:12:41] Measurement received - Server: 2, Value: 61%, Time: 26.9.2025. 13:12:41
+[2025-09-26 13:12:46] Measurement received - Server: 3, Value: 69%, Time: 26.9.2025. 13:12:46
+[2025-09-26 13:12:51] Measurement received - Server: 1, Value: 50%, Time: 26.9.2025. 13:12:51
+[2025-09-26 13:12:55] Measurement received - Server: 2, Value: 81%, Time: 26.9.2025. 13:12:55
+[2025-09-26 13:12:59] Measurement received - Server: 1, Value: 68%, Time: 26.9.2025. 13:12:59
+[2025-09-26 13:13:02] Measurement received - Server: 1, Value: 98%, Time: 26.9.2025. 13:13:02
+[2025-09-26 13:13:07] Measurement received - Server: 2, Value: 80%, Time: 26.9.2025. 13:13:07
+[2025-09-26 13:13:14] Measurement received - Server: 1, Value: 79%, Time: 26.9.2025. 13:13:14
