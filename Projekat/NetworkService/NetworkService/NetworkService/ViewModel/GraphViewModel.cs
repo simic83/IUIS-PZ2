@@ -112,9 +112,9 @@ namespace NetworkService.ViewModel
             var measurement = new MeasurementData(serverId, value);
             measurementHistory.Add(measurement);
 
-            // zadrži poslednjih 10 po serveru
+            // zadrži poslednjih 5 po serveru
             var serverMeasurements = measurementHistory.Where(m => m.ServerId == serverId).ToList();
-            if (serverMeasurements.Count > 10)
+            if (serverMeasurements.Count > 5)
             {
                 measurementHistory.Remove(serverMeasurements[0]);
             }
